@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-
 public class BookingUI extends JPanel {
     public BookingUI() {
         setLayout(new BorderLayout(10, 10));
@@ -17,9 +16,10 @@ public class BookingUI extends JPanel {
                 "Booking Details", TitledBorder.LEFT, TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 16)));
 
-        JTextField pickupField = new JTextField("Input something");
+        JTextField pickupField = new JTextField("Home");
 
-        inputPanel.add(new JLabel("Test")); inputPanel.add(pickupField);
+        inputPanel.add(new JLabel("Select...."));
+        inputPanel.add(pickupField);
 
         add(inputPanel, BorderLayout.CENTER);
     }
