@@ -8,6 +8,5 @@ public class Main {
             MainUI frame = new MainUI();
             frame.setVisible(true);
         });
-
     }
 }
