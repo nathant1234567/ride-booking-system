@@ -6,14 +6,16 @@ public class Booking {
     private User user;
     private String destination;
     private String pickupLocation;
+    private int lengthEstimate;
     private int numberOfPassengers;
     private Date date;
     private Date time;
 
-    public Booking(User user, String destination, String pickupLocation, int numberOfPassengers, Date date, Date time) {
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, Date date, Date time) {
         this.user = user;
         this.destination = destination;
         this.pickupLocation = pickupLocation;
+        this.lengthEstimate = lengthEstimate;
         this.numberOfPassengers = numberOfPassengers;
         this.date = date;
         this.time = time;
@@ -27,6 +29,9 @@ public class Booking {
 
     public String getPickupLocation() { return pickupLocation; }
     public void setPickupLocation(String pickupLocation) { this.pickupLocation = pickupLocation; }
+
+    public int getLengthEstimate() { return lengthEstimate; }
+    public void setLengthEstimate(int lengthEstimate) { this.lengthEstimate = lengthEstimate; }
 
     public int getNumberOfPassengers() { return numberOfPassengers; }
     public void setNumberOfPassengers(int numberOfPassengers) { this.numberOfPassengers = numberOfPassengers; }
@@ -43,6 +48,7 @@ public class Booking {
                 "user=" + user +
                 ", destination='" + destination + '\'' +
                 ", pickupLocation='" + pickupLocation + '\'' +
+                ", lengthEstimate=" + lengthEstimate +
                 ", numberOfPassengers=" + numberOfPassengers +
                 ", date=" + date +
                 ", time=" + time +

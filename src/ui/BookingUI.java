@@ -39,6 +39,10 @@ public class BookingUI extends JPanel {
         JTextField pickupField = new JTextField();
         inputPanel.add(pickupField);
 
+        inputPanel.add(new JLabel("Estimated length of journey (km):"));
+        JTextField length = new JTextField();
+        inputPanel.add(length);
+
         // Passengers
         inputPanel.add(new JLabel("Number of Passengers:"));
         SpinnerNumberModel passengerModel = new SpinnerNumberModel(1, 1, 8, 1);
@@ -61,15 +65,20 @@ public class BookingUI extends JPanel {
         timeSpinner.setEditor(timeEditor);
         inputPanel.add(timeSpinner);
 
+        inputPanel.add(new JLabel("Length of journey estimate:"));
+        inputPanel.add(new JLabel("[Input estimate length]"));
+
+
         JButton saveButton = new JButton("Save Booking");
         saveButton.setBackground(new Color(70, 130, 180));
         saveButton.setForeground(Color.WHITE);
         saveButton.setFont(new Font("Arial", Font.BOLD, 14));
 
-        saveButton.addActionListener(e -> {
+        saveButton.addActionListener(event -> {
             User user = (User) userComboBox.getSelectedItem();
             String destination = (String) destinationComboBox.getSelectedItem();
             String pickupLocation = pickupField.getText();
+            int lengthEstimate = Integer.parseInt(length.getText());
             int passengers = (int) passengerSpinner.getValue();
             Date date = (Date) dateSpinner.getValue();
             Date time = (Date) timeSpinner.getValue();
@@ -79,7 +88,7 @@ public class BookingUI extends JPanel {
                 return;
             }
 
-            Booking booking = new Booking(user, destination, pickupLocation, passengers, date, time);
+            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, date, time);
             SaveBooking.save(booking);
             JOptionPane.showMessageDialog(this, "Booking saved successfully!");
         });
