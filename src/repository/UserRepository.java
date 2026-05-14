@@ -13,4 +13,8 @@ public class UserRepository {
         users.add(new User("Nathan Thompson", "njt38@kentac.uk", "987654321"));
         users.add(new User("John Doe", "john@example.com", "123456789"));
     }
+
+    public static List<User> getUsers() {
+        return new ArrayList<>(users);
+    }
 }

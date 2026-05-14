@@ -1,0 +1,38 @@
+package classes;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.Date;
+
+class BookingTest {
+    @Test
+    void testBookingConstructorAndGetters() {
+        User user = new User("Nathan Thompson", "njt38@kent.ac.uk", "0123456789");
+        String destination = "London Heathrow (LHR)";
+        String pickup = "Canterbury";
+        int passengers = 2;
+        Date date = new Date();
+        Date time = new Date();
+
+        Booking booking = new Booking(user, destination, pickup, passengers, date, time);
+
+        assertEquals(user, booking.getUser(), "User should match");
+        assertEquals(destination, booking.getDestination(), "Destination should match");
+        assertEquals(pickup, booking.getPickupLocation(), "Pickup location should match");
+        assertEquals(passengers, booking.getNumberOfPassengers(), "Number of passengers should match");
+        assertEquals(date, booking.getDate(), "Date should match");
+        assertEquals(time, booking.getTime(), "Time should match");
+    }
+
+    @Test
+    void testSetters() {
+        User user = new User("John Doe", "john@example.com", "987654321");
+        Booking booking = new Booking(user, "Old Dest", "Old Pickup", 1, new Date(), new Date());
+        
+        String newDest = "Central London";
+
+        booking.setDestination(newDest);
+
+        assertEquals(newDest, booking.getDestination(), "Destination should be updated via setter");
+    }
+}
