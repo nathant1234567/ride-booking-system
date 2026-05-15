@@ -10,6 +10,8 @@ public class MainUI extends JFrame {
 
         BookingUI bookingUI = new BookingUI();
 
+        ManageBookingsUI manageBookingsUI = new ManageBookingsUI = new ManageBookingsUI();
+
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
@@ -17,7 +19,7 @@ public class MainUI extends JFrame {
 
         tabbedPane.addTab("Booking", bookingUI); // do this for every page
 
-
+        tabbedPane.addTab("Manage Bookings", manageBookingsUI);
 
 
         add(tabbedPane, BorderLayout.CENTER);
