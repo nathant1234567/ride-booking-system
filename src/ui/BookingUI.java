@@ -78,7 +78,8 @@ public class BookingUI extends JPanel {
             User user = (User) userComboBox.getSelectedItem();
             String destination = (String) destinationComboBox.getSelectedItem();
             String pickupLocation = pickupField.getText();
-            int lengthEstimate = Integer.parseInt(length.getText());
+            String lengthEstimate = length.getText();
+            int lengthEstimateInt = Integer.parseInt(lengthEstimate);
             int passengers = (int) passengerSpinner.getValue();
             Date date = (Date) dateSpinner.getValue();
             Date time = (Date) timeSpinner.getValue();
@@ -87,8 +88,12 @@ public class BookingUI extends JPanel {
                 JOptionPane.showMessageDialog(this, "Please enter a pickup location.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if (lengthEstimate.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a length estimate.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, date, time);
+            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimateInt, passengers, date, time);
             BookingService.saveBooking(booking);
             JOptionPane.showMessageDialog(this, "Booking saved successfully!");
         });
