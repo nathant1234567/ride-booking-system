@@ -2,7 +2,7 @@ package ui;
 
 import classes.Booking;
 import classes.User;
-import logic.SaveBooking;
+import service.BookingService;
 import repository.UserRepository;
 
 import javax.swing.*;
@@ -89,7 +89,7 @@ public class BookingUI extends JPanel {
             }
 
             Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, date, time);
-            SaveBooking.save(booking);
+            BookingService.saveBooking(booking);
             JOptionPane.showMessageDialog(this, "Booking saved successfully!");
         });
 
