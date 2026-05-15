@@ -12,5 +12,5 @@
 - Classes - the specific objects such as Booking, Payment, User etc
 - Logic - where the processes get handled for examplpe when you click on make Booking
 - Repository - the temporary places where things get saved in arrays
-- UI - the ui code with no logic
+- UI - the ui code with no service
 
