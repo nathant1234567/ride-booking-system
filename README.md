@@ -1,9 +1,11 @@
 - Make new booking - Nathan
 - Pay for new booking - Nathan
 
+- Securely pay for a booking - Ibitola
+- Edit and cancel booking - Ibitola
 
-- Browse available services and tariffs - Ibitola
-- Pay for amendment and cancellation - Ibitola
+- Browse services and tariffs - MJ
+- Offer discounts - MJ
 
 ======
 
