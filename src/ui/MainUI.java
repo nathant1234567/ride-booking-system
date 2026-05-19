@@ -26,6 +26,14 @@ public class MainUI extends JFrame {
             int selectedIndex =
                     tabbedPane.getSelectedIndex();
 
+            String selectedTab =
+                    tabbedPane.getTitleAt(selectedIndex);
+
+            if (selectedTab.equals("Manage Bookings")) {
+
+                manageBookingsUI.loadBookings();
+            }
+        });
         add(tabbedPane, BorderLayout.CENTER);
     }
 }
