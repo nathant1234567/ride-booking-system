@@ -21,6 +21,10 @@ public class MainUI extends JFrame {
 
         tabbedPane.addTab("Manage Bookings", manageBookingsUI);
 
+        tabbedPane.addChangeListener(e -> {
+
+            int selectedIndex =
+                    tabbedPane.getSelectedIndex();
 
         add(tabbedPane, BorderLayout.CENTER);
     }
