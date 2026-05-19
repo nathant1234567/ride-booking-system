@@ -1,5 +1,5 @@
 - Make new booking - Nathan
-- Cancel booking - Nathan
+- Cancel booking - Jeremy
 
 - Pay for new booking - Ibitola
 - Amend booking - Ibitola
@@ -8,7 +8,7 @@
 - Offer discount during periods of low demand - MJ
 
 - Pay for amendment and cancellation - Jeremy
-- Send confirmation message for booking - Jeremy
+- Send confirmation message for booking - Nathan
 
 ======
 
