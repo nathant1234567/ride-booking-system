@@ -4,6 +4,10 @@ import classes.Booking;
 import repository.BookingRepository;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.List;
+
 
 public class ManageBookingsUI extends JPanel {
 
