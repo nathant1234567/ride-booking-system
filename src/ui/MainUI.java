@@ -16,7 +16,6 @@ public class MainUI extends JFrame {
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
 
-
         tabbedPane.addTab("Booking", bookingUI); // do this for every page
 
         tabbedPane.addTab("Manage Bookings", manageBookingsUI);
