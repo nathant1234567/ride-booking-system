@@ -7,11 +7,13 @@ import java.util.List;
 
 public class UserRepository {
 
-    private static List<User> users = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
 
     static {
-        users.add(new User("Nathan Thompson", "njt38@kentac.uk", "987654321"));
-        users.add(new User("John Doe", "john@example.com", "123456789"));
+        users.add(new User("Nathan Thompson", "njt38@kent.ac.uk", "987654321"));
+        users.add(new User("Ibitola Omole", "dioo2@kent.ac.uk", "123456789"));
+        users.add(new User("Jeremy Mensah", "jm2463@kent.ac.uk", "987654321"));
+        users.add(new User("Maryjane Obi", "cmo302@kent.ac.uk", "123456789"));
     }
 
     public static List<User> getUsers() {
