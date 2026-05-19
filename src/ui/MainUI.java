@@ -6,7 +6,7 @@ public class MainUI extends JFrame {
     public MainUI() {
         setTitle("COMP5009 Rideshare app");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(1000, 800);
 
         BookingUI bookingUI = new BookingUI();
 
