@@ -1,6 +1,8 @@
 package ui;
 
-import service.BookingService;
+import classes.Booking;
+import repository.BookingRepository;
+
 import javax.swing.*;
 
 public class ManageBookingsUI extends JPanel {
