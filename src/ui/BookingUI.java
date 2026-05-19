@@ -1,6 +1,7 @@
 package ui;
 
 import classes.Booking;
+import classes.Payment;
 import classes.User;
 import service.BookingService;
 import repository.UserRepository;
@@ -78,7 +79,6 @@ public class BookingUI extends JPanel {
             User user = (User) userComboBox.getSelectedItem();
             String destination = (String) destinationComboBox.getSelectedItem();
             String pickupLocation = pickupField.getText();
-            int lengthEstimate = Integer.parseInt(length.getText());
             int passengers = (int) passengerSpinner.getValue();
             Date date = (Date) dateSpinner.getValue();
             Date time = (Date) timeSpinner.getValue();
@@ -88,9 +88,25 @@ public class BookingUI extends JPanel {
                 return;
             }
 
+            int lengthEstimate;
+            try {
+                lengthEstimate = Integer.parseInt(length.getText().trim());
+                if (lengthEstimate <= 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid journey length.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid journey length.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, date, time);
             BookingService.saveBooking(booking);
-            JOptionPane.showMessageDialog(this, "Booking saved successfully!");
+            JOptionPane.showMessageDialog(this, "Loading to the payment screen...");
+
+            Payment payment = new Payment();
+            PaymentUI paymentUI = new PaymentUI(payment);
+            paymentUI.setVisible(true);
         });
 
         add(inputPanel, BorderLayout.CENTER);
