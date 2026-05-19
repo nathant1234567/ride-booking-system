@@ -143,10 +143,29 @@ public class ManageBookingsUI extends JPanel {
 
         cancelButton.addActionListener(e -> {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Cancel booking clicked"
-            );
+            int confirm =
+                    JOptionPane.showConfirmDialog(
+                            this,
+                            "Are you sure you'd like to cancel this booking?",
+                            "Cancel Booking",
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+
+                BookingRepository.removeBooking(booking);
+
+                bookingsPanel.remove(card);
+
+                bookingsPanel.revalidate();
+
+                bookingsPanel.repaint();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Booking cancelled successfully"
+                );
+            }
         });
 
         JPanel buttonPanel = new JPanel();
