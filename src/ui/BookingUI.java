@@ -15,6 +15,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class BookingUI extends JPanel {
+    /**
+     * A GUI for creating new bookings.
+     * Currently the first screen a user sees when they open the application.
+     * Handles user input validation and shows time estimates.
+     */
     public BookingUI() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));

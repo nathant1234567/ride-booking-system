@@ -7,6 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class BookingService {
+    /**
+     * Class to handle the logic to create bookings.
+     * It includes booking creation, cancellation and trip management functions. 
+     * @param booking
+     */
 
     public static void saveBooking(Booking booking) {
         BookingRepository.addBooking(booking);
