@@ -11,6 +11,7 @@ public class Booking {
     private int amountOfLuggage;
     private Date date;
     private Date time;
+    private Trip trip;
 
     public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int amountOfLuggage, Date date, Date time) {
         this.user = user;
@@ -22,6 +23,9 @@ public class Booking {
         this.date = date;
         this.time = time;
     }
+
+    public Trip getTrip() { return trip; }
+    public void setTrip(Trip trip) { this.trip = trip; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
