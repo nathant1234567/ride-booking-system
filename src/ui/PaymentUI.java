@@ -46,11 +46,19 @@ public class PaymentUI extends JFrame {
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
 
+        JButton discountButton = new JButton("Apply Discount");
+        add(discountButton);
+
+        discountButton.addActionListener(e -> {
+            DiscountUI.launch(amountField, discountButton);
+        });
+
         JButton amendBtn = new JButton("Amend this Booking");
         amendBtn.setEnabled(false);
         add(amendBtn);
 
         amendBtn.addActionListener(e -> openQuickAmendDialog());
+
         payButton.addActionListener(e -> handlePayment(amendBtn));
     }
 
@@ -160,4 +168,3 @@ public class PaymentUI extends JFrame {
         dialog.setVisible(true);
     }
 }
-
