@@ -53,17 +53,20 @@ public class Booking {
     public Date getTime() { return time; }
     public void setTime(Date time) { this.time = time; }
 
+    // --- NEW CLEAN DISPLAY STRING FOR THE JCOMBOBOX DROPDOWN ---
     @Override
     public String toString() {
-        return "Booking{" +
-                "user=" + user +
-                ", destination='" + destination + '\'' +
-                ", pickupLocation='" + pickupLocation + '\'' +
-                ", lengthEstimate=" + lengthEstimate +
-                ", numberOfPassengers=" + numberOfPassengers +
-                ", numberOfLuggage=" + numberOfLuggage +
-                ", date=" + date +
-                ", time=" + time +
-                '}';
+        String identifier = "Guest";
+        if (this.user != null) {
+            // Pulls the user's email address context dynamically to keep things simple and secure
+            identifier = this.user.getEmail() != null ? this.user.getEmail() : "User";
+        }
+
+        // Formats a clean, readable text sequence for your selection rows
+        return String.format("%s to %s (Pickup: %s)",
+                identifier,
+                this.destination,
+                this.pickupLocation
+        );
     }
 }

@@ -12,48 +12,67 @@ public class AmendBookingUI extends JPanel {
 
     private JComboBox<Booking> bookingCombo;
 
+    // Helper method to populate fields automatically
+    private void populateFields(JTextField pickup, JTextField destination, JTextField length,
+                                JSpinner passengers, JSpinner luggage, JSpinner dateSpinner, JSpinner timeSpinner) {
+        Booking b = (Booking) bookingCombo.getSelectedItem();
+        if (b == null) return;
+        pickup.setText(b.getPickupLocation());
+        destination.setText(b.getDestination());
+        length.setText(String.valueOf(b.getLengthEstimate()));
+        passengers.setValue(b.getNumberOfPassengers());
+        luggage.setValue(b.getNumberOfLuggage());
+        dateSpinner.setValue(b.getDate());
+        timeSpinner.setValue(b.getTime());
+    }
+
     public AmendBookingUI() {
         setLayout(new BorderLayout(10,10));
 
         bookingCombo = new JComboBox<>(BookingRepository.getBookings().toArray(new Booking[0]));
         add(bookingCombo, BorderLayout.NORTH);
 
-        JPanel form = new JPanel(new GridLayout(0,2,8,8));
+        JPanel form = new JPanel(new GridLayout(0, 2, 8, 8));
+
         JTextField pickup = new JTextField();
+        pickup.setEditable(false);
         JTextField destination = new JTextField();
+        destination.setEditable(false);
         JTextField length = new JTextField();
-        JSpinner passengers = new JSpinner(new SpinnerNumberModel(1,1,8,1));
-        JSpinner luggage = new JSpinner(new SpinnerNumberModel(0,0,10,1));
+        length.setEditable(false);
+
+        JSpinner passengers = new JSpinner(new SpinnerNumberModel(1, 1, 8, 1));
+        passengers.setEnabled(false);
+        JSpinner luggage = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+        luggage.setEnabled(false);
+
         JSpinner dateSpinner = new JSpinner(new SpinnerDateModel(new Date(), null, null, java.util.Calendar.DAY_OF_MONTH));
         JSpinner timeSpinner = new JSpinner(new SpinnerDateModel(new Date(), null, null, java.util.Calendar.HOUR_OF_DAY));
 
+        dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy"));
+        timeSpinner.setEditor(new JSpinner.DateEditor(timeSpinner, "HH:mm"));
+
         form.add(new JLabel("Pickup:")); form.add(pickup);
         form.add(new JLabel("Destination:")); form.add(destination);
-        form.add(new JLabel("Length (km):")); form.add(length);
+        form.add(new JLabel("Length (km/Duration):")); form.add(length);
         form.add(new JLabel("Passengers:")); form.add(passengers);
         form.add(new JLabel("Luggage:")); form.add(luggage);
-        form.add(new JLabel("Date:")); form.add(dateSpinner);
-        form.add(new JLabel("Time:")); form.add(timeSpinner);
+        form.add(new JLabel("New Date:")); form.add(dateSpinner);
+        form.add(new JLabel("New Time:")); form.add(timeSpinner);
 
         add(form, BorderLayout.CENTER);
 
-        JButton loadBtn = new JButton("Load Booking");
         JButton saveBtn = new JButton("Save Changes");
         JPanel south = new JPanel();
-        south.add(loadBtn);
         south.add(saveBtn);
         add(south, BorderLayout.SOUTH);
 
-        loadBtn.addActionListener(e -> {
-            Booking b = (Booking) bookingCombo.getSelectedItem();
-            if (b == null) return;
-            pickup.setText(b.getPickupLocation());
-            destination.setText(b.getDestination());
-            length.setText(String.valueOf(b.getLengthEstimate()));
-            passengers.setValue(b.getNumberOfPassengers());
-            luggage.setValue(b.getNumberOfLuggage());
-            dateSpinner.setValue(b.getDate());
-            timeSpinner.setValue(b.getTime());
+        // --- AUTOMATION 1: Populate fields immediately when window opens ---
+        populateFields(pickup, destination, length, passengers, luggage, dateSpinner, timeSpinner);
+
+        // --- AUTOMATION 2: Automatically update fields if user changes dropdown item ---
+        bookingCombo.addActionListener(e -> {
+            populateFields(pickup, destination, length, passengers, luggage, dateSpinner, timeSpinner);
         });
 
         saveBtn.addActionListener(e -> {
@@ -61,26 +80,65 @@ public class AmendBookingUI extends JPanel {
             if (original == null) return;
 
             try {
-                int len = Integer.parseInt(length.getText().trim());
-                Booking updated = new Booking(original.getUser(), destination.getText().trim(), pickup.getText().trim(), len,
-                        (int) passengers.getValue(), (int) luggage.getValue(), (Date) dateSpinner.getValue(), (Date) timeSpinner.getValue());
+                Date chosenDate = (Date) dateSpinner.getValue();
+                Date chosenTime = (Date) timeSpinner.getValue();
+
+                Booking bookingClone = new Booking(
+                        original.getUser(), original.getDestination(), original.getPickupLocation(),
+                        original.getLengthEstimate(), original.getNumberOfPassengers(), original.getNumberOfLuggage(),
+                        original.getDate(), original.getTime()
+                );
+
+                boolean canAccommodate = BookingService.checkTripAccommodation(bookingClone, chosenDate, chosenTime);
+                if (!canAccommodate) {
+                    JOptionPane.showMessageDialog(this,
+                            "Cannot amend: The selected trip time cannot accommodate additional capacity changes.",
+                            "Accommodation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Booking updated = new Booking(
+                        original.getUser(),
+                        original.getDestination(),
+                        original.getPickupLocation(),
+                        bookingClone.getLengthEstimate(),
+                        original.getNumberOfPassengers(),
+                        original.getNumberOfLuggage(),
+                        chosenDate,
+                        chosenTime
+                );
 
                 boolean ok = BookingRepository.updateBooking(original, updated);
                 if (ok) {
-                    JOptionPane.showMessageDialog(this, "Booking updated");
-                    // refresh combo
+                    PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null);
+                    double amendmentFee = BookingService.calculateAmendmentFee(updated);
+
+                    JOptionPane.showMessageDialog(this, String.format(
+                            "Booking updated successfully!\n" +
+                                    "New Base Price: £%.2f\n" +
+                                    "Amendment Processing Fee: £%.2f",
+                            pb.getFinalTotal(), amendmentFee
+                    ));
+
                     bookingCombo.removeAllItems();
                     for (Booking b : BookingRepository.getBookings()) bookingCombo.addItem(b);
-                    // show new estimated price
-                    PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null);
-                    JOptionPane.showMessageDialog(this, String.format("New estimated price: £%.2f", pb.getFinalTotal()));
+
+                    Window topWindow = SwingUtilities.getWindowAncestor(this);
+                    if (topWindow != null) {
+                        topWindow.dispose();
+                    }
+
+                    classes.Payment paymentContext = new classes.Payment();
+                    PaymentUI paymentWindow = new PaymentUI(paymentContext, pb, updated);
+                    paymentWindow.setLocationRelativeTo(this);
+                    paymentWindow.setVisible(true);
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update booking", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Invalid length value", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error processing changes: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 }
-
