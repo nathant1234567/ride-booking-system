@@ -19,6 +19,7 @@ public class PaymentUI extends JFrame {
     private Booking booking;
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
+        setResizable(false);
 
         this.payment = payment;
         this.breakdown = breakdown;
