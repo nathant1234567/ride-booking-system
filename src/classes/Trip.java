@@ -42,7 +42,7 @@ public class Trip {
     }
 
     private void recalculateDuration() {
-        // Simple logic: base duration (first booking) + 10 mins for each extra pickup
+        // base duration (first booking) + 10 mins for each extra pickup
         if (bookings.isEmpty()) {
             this.totalDuration = 0;
             return;
