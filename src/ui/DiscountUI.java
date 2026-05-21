@@ -8,19 +8,16 @@ import java.awt.event.ActionListener;
 
 public class DiscountUI {
     public static void main(String[] args) {
-        // Initialise the window frame
         JFrame frame = new JFrame("Discount Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(350, 200);
         frame.setLayout(new GridLayout(4, 2, 10, 10));
 
-        // Create UI components
         JLabel priceLabel = new JLabel(" Base Price (£):");
         JTextField priceField = new JTextField();
 
         JLabel timeLabel = new JLabel(" Time of Day:");
 
-        // Generate an array of hours (00 to 23) for the drop-down
         String[] hours = new String[24];
         for (int i = 0; i < 24; i++) {
             hours[i] = String.format("%02d", i);
@@ -30,7 +27,6 @@ public class DiscountUI {
         JButton calcButton = new JButton("Calculate");
         JLabel resultLabel = new JLabel(" Final Price: ");
 
-        // Add components to the frame
         frame.add(priceLabel);
         frame.add(priceField);
         frame.add(timeLabel);
@@ -40,7 +36,6 @@ public class DiscountUI {
         frame.add(new JLabel("")); // Empty spacer
         frame.add(resultLabel);
 
-        // Add logic to the button
         calcButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +52,6 @@ public class DiscountUI {
             }
         });
 
-        // Display the window
         frame.setVisible(true);
     }
 }
