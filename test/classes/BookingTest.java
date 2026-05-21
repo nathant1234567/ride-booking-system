@@ -6,35 +6,25 @@ import java.util.Date;
 
 class BookingTest {
     @Test
-    void testBookingConstructorAndGetters() {
-        User user = new User("Nathan Thompson", "njt38@kent.ac.uk", "0123456789");
-        String destination = "London Heathrow (LHR)";
-        String pickup = "Canterbury";
-        int lengthEstimate = 100;
-        int passengers = 2;
-        int amountOfLuggage = 4;
-        Date date = new Date();
-        Date time = new Date();
+    void testSettersAndUpdates() {
+        Booking booking = new Booking(null, "Old", "Old", 10, 1, 1, new Date(), new Date());
 
-        Booking booking = new Booking(user, destination, pickup, lengthEstimate, passengers, amountOfLuggage, date, time);
+        booking.setDestination("Destination");
+        assertEquals("Destination", booking.getDestination(), "Setter should update destination field");
 
-        assertEquals(user, booking.getUser(), "User should match");
-        assertEquals(destination, booking.getDestination(), "Destination should match");
-        assertEquals(pickup, booking.getPickupLocation(), "Pickup location should match");
-        assertEquals(passengers, booking.getNumberOfPassengers(), "Number of passengers should match");
-        assertEquals(date, booking.getDate(), "Date should match");
-        assertEquals(time, booking.getTime(), "Time should match");
+        booking.setNumberOfPassengers(8);
+        assertEquals(8, booking.getNumberOfPassengers(), "Setter should update passenger count");
     }
 
     @Test
-    void testSetters() {
-        User user = new User("John Doe", "john@example.com", "987654321");
-        Booking booking = new Booking(user, "Old Dest", "Old Pickup", 56, 1, 5, new Date(), new Date());
-        
-        String newDest = "Central London";
+    void testTripAssignment() {
+        Booking booking = new Booking(null, "LHR", "Kent", 10, 1, 1, new Date(), new Date());
+        Trip trip = new Trip("T1", "LHR");
 
-        booking.setDestination(newDest);
+        booking.setTrip(trip);
 
-        assertEquals(newDest, booking.getDestination(), "Destination should be updated via setter");
+        assertNotNull(booking.getTrip(), "Booking should hold a trip");
+        assertEquals("T1", booking.getTrip().getId(), "Assigned trip ID should match");
     }
 }
+
