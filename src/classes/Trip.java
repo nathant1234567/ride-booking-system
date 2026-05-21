@@ -1,43 +1,46 @@
 package classes;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Simple Trip class that represents an actual assigned trip based on a booking.
- */
 public class Trip {
-    private static int counter = 1;
+    private String id;
+    private String destination;
+    private List<Booking> bookings;
+    private int totalDuration;
 
-    private int id;
-    private Booking booking;
-    private String status; // e.g., "Scheduled", "In Progress", "Completed", "Cancelled"
-    private double price;
-    private Date createdAt;
-
-    public Trip(Booking booking, double price) {
-        this.id = counter++;
-        this.booking = booking;
-        this.price = price;
-        this.status = "Scheduled";
-        this.createdAt = new Date();
+    public Trip(String id, String destination) {
+        this.id = id;
+        this.destination = destination;
+        this.bookings = new ArrayList<>();
     }
 
-    public int getId() { return id; }
-    public Booking getBooking() { return booking; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public Date getCreatedAt() { return createdAt; }
+    public String getId() { return id; }
+
+    public String getDestination() { return destination; }
+
+    public List<Booking> getBookings() { return bookings; }
+
+    public void addBooking(Booking booking) {
+        if (!bookings.contains(booking)) {
+            bookings.add(booking);
+        }
+    }
+
+    public void removeBooking(Booking booking) {
+        bookings.remove(booking);
+    }
+
+    public int getTotalDuration() { return totalDuration; }
+    public void setTotalDuration(int totalDuration) { this.totalDuration = totalDuration; }
 
     @Override
     public String toString() {
         return "Trip{" +
-                "id=" + id +
-                ", booking=" + booking +
-                ", status='" + status + '\'' +
-                ", price=" + price +
+                "id='" + id + '\'' +
+                ", destination='" + destination + '\'' +
+                ", passengers=" + bookings.size() +
+                ", totalDuration=" + totalDuration +
                 '}';
     }
 }
-
