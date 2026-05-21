@@ -32,9 +32,20 @@ public class PaymentUI extends JFrame {
         JButton payButton = new JButton("Pay");
         add(payButton);
 
+
+
         outputArea = new JTextArea(8, 30);
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
+
+        JButton discountButton = new JButton("Apply Discount");
+        add(discountButton);
+
+        discountButton.addActionListener(e -> {
+            DiscountUI.launch(amountField, discountButton);
+        });
+
+
 
         payButton.addActionListener(e -> handlePayment());
     }
