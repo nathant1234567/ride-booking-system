@@ -31,9 +31,9 @@ public class DiscountUI {
         frame.add(priceField);
         frame.add(timeLabel);
         frame.add(timeDropdown);
-        frame.add(new JLabel("")); // Empty spacer
+        frame.add(new JLabel("")); 
         frame.add(calcButton);
-        frame.add(new JLabel("")); // Empty spacer
+        frame.add(new JLabel("")); 
         frame.add(resultLabel);
 
         calcButton.addActionListener(new ActionListener() {
@@ -41,7 +41,6 @@ public class DiscountUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     double price = Double.parseDouble(priceField.getText());
-                    // Fetch the selected hour from the drop-down
                     int time = Integer.parseInt((String) timeDropdown.getSelectedItem());
 
                     double finalPrice = DiscountCalculator.calculateDiscount(price, time);
