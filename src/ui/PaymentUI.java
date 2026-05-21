@@ -18,20 +18,26 @@ public class PaymentUI extends JFrame {
     private PriceBreakdown breakdown;
     private Booking booking;
 
-    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
+    // Save state variables to detect real scheduling alterations
+    private java.util.Date originalDate;
+    private java.util.Date originalTime;
 
+    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
         this.payment = payment;
         this.breakdown = breakdown;
         this.booking = booking;
 
+        // Cache historical timestamps to determine if a real change occurred
+        this.originalDate = booking.getDate();
+        this.originalTime = booking.getTime();
+
         setTitle("Payment UI");
-        setSize(400, 300);
+        setSize(420, 340);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
 
         add(new JLabel("Amount (£):"));
         amountField = new JTextField(10);
-        amountField.setText(String.format("%.2f", breakdown.getFinalTotal()));
         amountField.setEditable(false);
         add(amountField);
 
@@ -42,29 +48,61 @@ public class PaymentUI extends JFrame {
         JButton payButton = new JButton("Pay");
         add(payButton);
 
+        JButton cancelBtn = new JButton("Cancel");
+        add(cancelBtn);
+
         outputArea = new JTextArea(8, 30);
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
 
         JButton amendBtn = new JButton("Amend this Booking");
-        amendBtn.setEnabled(false);
+        amendBtn.setEnabled(true); // Enabled so users can change choices before paying
         add(amendBtn);
 
-        amendBtn.addActionListener(e -> openQuickAmendDialog());
-        payButton.addActionListener(e -> handlePayment(amendBtn));
+        // --- DYNAMIC PRICE CALCULATION ON LOAD ---
+        refreshDisplayAmount();
+
+        // Click listeners recalculate live data on event trigger
+        amendBtn.addActionListener(e -> openQuickAmendDialog(this, this.booking));
+        payButton.addActionListener(e -> handlePayment());
+
+        cancelBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to cancel this payment?",
+                    "Cancel Payment", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                this.dispose();
+            }
+        });
     }
 
-    private void handlePayment(JButton amendBtn) {
+    /**
+     * Recalculates price parameters.
+     * Enforces the Amendment Fee ONLY if the Date or Time has actually been altered.
+     */
+    public void refreshDisplayAmount() {
+        // 1. Recalculate price parameters with latest booking details
+        this.breakdown = BookingService.calculatePriceWithDiscount(this.booking, null);
 
+        // 2. Conditionally apply the fee only if scheduling metrics differ
+        double amendmentFee = 0.0;
+        if (!this.booking.getDate().equals(originalDate) || !this.booking.getTime().equals(originalTime)) {
+            amendmentFee = BookingService.calculateAmendmentFee(this.booking);
+        }
+
+        double totalDue = this.breakdown.getFinalTotal() + amendmentFee;
+        this.amountField.setText(String.format("%.2f", totalDue));
+    }
+
+    private void handlePayment() {
         String amountText = amountField.getText().trim();
-
         if (amountText.isEmpty()) {
             outputArea.setText("Please enter an amount.");
             return;
         }
 
         try {
-            double amount = Double.parseDouble(amountText);
+            double activeAmount = Double.parseDouble(amountText);
             String method = (String) methodBox.getSelectedItem();
 
             if (method == null) {
@@ -72,9 +110,15 @@ public class PaymentUI extends JFrame {
                 return;
             }
 
-            boolean success = payment.processPayment(amount, method);
+            boolean success = payment.processPayment(activeAmount, method);
 
             if (success) {
+                // Determine whether to display the amendment handling charge line item
+                double amendmentFee = 0.0;
+                if (!this.booking.getDate().equals(originalDate) || !this.booking.getTime().equals(originalTime)) {
+                    amendmentFee = BookingService.calculateAmendmentFee(this.booking);
+                }
+
                 StringBuilder sb = new StringBuilder();
                 sb.append("Payment Successful!\n");
                 sb.append(String.format("Base: £%.2f\n", this.breakdown.getBase()));
@@ -84,80 +128,49 @@ public class PaymentUI extends JFrame {
                 if (this.breakdown.getDiscountAmount() > 0) {
                     sb.append(String.format("Discounts (%s): -£%.2f\n", this.breakdown.getDiscountDescription(), this.breakdown.getDiscountAmount()));
                 }
-                sb.append(String.format("Total charged: £%.2f\n", amount));
+                if (amendmentFee > 0) {
+                    sb.append(String.format("Amendment Fee: +£%.2f\n", amendmentFee));
+                }
+                sb.append(String.format("Total charged: £%.2f\n", activeAmount));
                 sb.append("Method: " + method + "\n");
 
                 outputArea.setText(sb.toString());
-                amendBtn.setEnabled(true);
+
+                if (ManageBookingsUI.getInstance() != null) {
+                    ManageBookingsUI.getInstance().loadBookings();
+                }
             } else {
                 outputArea.setText("Payment Failed. Invalid input or method.");
             }
 
         } catch (NumberFormatException e) {
-            outputArea.setText("Invalid amount. Please enter a valid number.");
+            outputArea.setText("Invalid amount entry processing error.");
         }
     }
 
-    private void openQuickAmendDialog() {
+    public static void openQuickAmendDialog(Component parent, Booking booking) {
         if (booking == null) return;
 
-        JDialog dialog = new JDialog(this, "Amend Booking #" + System.identityHashCode(booking), true);
-        dialog.setSize(600, 500);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new BorderLayout(10, 10));
+        Window activeWindow = SwingUtilities.getWindowAncestor(parent);
+        JDialog dialog = new JDialog(activeWindow, "Amend " + booking.toString(), Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setSize(600, 520);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setLayout(new BorderLayout());
 
-        JPanel form = new JPanel(new GridLayout(0, 2, 8, 8));
-        form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        AmendBookingUI amendPanel = new AmendBookingUI();
+        dialog.add(amendPanel, BorderLayout.CENTER);
 
-        JTextField pickup = new JTextField(booking.getPickupLocation());
-        JTextField destination = new JTextField(booking.getDestination());
-        JTextField length = new JTextField(String.valueOf(booking.getLengthEstimate()));
-        JSpinner passengers = new JSpinner(new SpinnerNumberModel(booking.getNumberOfPassengers(), 1, 8, 1));
-        JSpinner luggage = new JSpinner(new SpinnerNumberModel(booking.getNumberOfLuggage(), 0, 10, 1));
-        JSpinner dateSpinner = new JSpinner(new SpinnerDateModel(booking.getDate(), null, null, java.util.Calendar.DAY_OF_MONTH));
-        JSpinner timeSpinner = new JSpinner(new SpinnerDateModel(booking.getTime(), null, null, java.util.Calendar.HOUR_OF_DAY));
-
-        form.add(new JLabel("Pickup:"));
-        form.add(pickup);
-        form.add(new JLabel("Destination:"));
-        form.add(destination);
-        form.add(new JLabel("Length (km):"));
-        form.add(length);
-        form.add(new JLabel("Passengers:"));
-        form.add(passengers);
-        form.add(new JLabel("Luggage:"));
-        form.add(luggage);
-        form.add(new JLabel("Date:"));
-        form.add(dateSpinner);
-        form.add(new JLabel("Time:"));
-        form.add(timeSpinner);
-
-        dialog.add(new JScrollPane(form), BorderLayout.CENTER);
-
-        JButton saveBtn = new JButton("Save Changes");
-        saveBtn.addActionListener(ae -> {
-            try {
-                int len = Integer.parseInt(length.getText().trim());
-                Booking updated = new Booking(booking.getUser(), destination.getText().trim(), pickup.getText().trim(), len,
-                        (int) passengers.getValue(), (int) luggage.getValue(), (java.util.Date) dateSpinner.getValue(), (java.util.Date) timeSpinner.getValue());
-
-                if (BookingRepository.updateBooking(booking, updated)) {
-                    PriceBreakdown newBreakdown = BookingService.calculatePriceWithDiscount(updated, null);
-                    JOptionPane.showMessageDialog(dialog, String.format("Booking updated! New price: £%.2f", newBreakdown.getFinalTotal()));
-                    dialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(dialog, "Failed to update booking", "Error", JOptionPane.ERROR_MESSAGE);
+        // --- REFRESH ACTION DETECTOR ON WINDOW CLOSURE ---
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                // If parent context is a PaymentUI instance, refresh the visible price calculations
+                if (activeWindow instanceof PaymentUI) {
+                    ((PaymentUI) activeWindow).refreshDisplayAmount();
                 }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Invalid length", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        JPanel south = new JPanel();
-        south.add(saveBtn);
-        dialog.add(south, BorderLayout.SOUTH);
 
         dialog.setVisible(true);
     }
 }
-

@@ -6,6 +6,7 @@ import repository.BookingRepository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class BookingService {
 
@@ -121,5 +122,93 @@ public class BookingService {
             return 1.0;
         }
     }
-}
 
+    // =========================================================================
+    // --- METHOD: TRIP ACCOMMODATION AND DURATION RECALCULATION CHECK ---
+    // =========================================================================
+    public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
+        List<Booking> allBookings = BookingRepository.getBookings();
+
+        // 1. CAPACITY CONSTRAINT CHECK
+        int passengerCountOnThisTrip = targetBooking.getNumberOfPassengers();
+
+        for (Booking other : allBookings) {
+            // Skip the booking itself
+            if (other.equals(targetBooking)) continue;
+
+            // Check if another user is on the exact same trip route (Destination & Pickup match)
+            if (other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
+                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation())) {
+
+                // Check if they overlap on the same date
+                if (isSameDay(other.getDate(), newDate)) {
+                    passengerCountOnThisTrip += other.getNumberOfPassengers();
+
+                    // Business Rule Example: Total passengers on a shared trip cannot exceed 8
+                    if (passengerCountOnThisTrip > 8) {
+                        return false; // Cannot accommodate the change
+                    }
+                }
+            }
+        }
+
+        // 2. DURATION RECALCULATION FOR ALL AFFECTED USERS
+        // Temporarily apply the new time variables to the target booking to recalculate its duration
+        targetBooking.setTime(newTime);
+        targetBooking.setDate(newDate);
+        int newTargetDuration = bookingLengthCalculator(targetBooking, targetBooking.getNumberOfLuggage());
+        targetBooking.setLengthEstimate(newTargetDuration);
+
+        // Recalculate duration for any other users riding along on this newly selected trip configuration
+        for (Booking other : allBookings) {
+            if (!other.equals(targetBooking) &&
+                    other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
+                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation()) &&
+                    isSameDay(other.getDate(), newDate)) {
+
+                // Synchronize their time window to match the updated route group schedule
+                other.setTime(newTime);
+                int updatedOtherDuration = bookingLengthCalculator(other, other.getNumberOfLuggage());
+                other.setLengthEstimate(updatedOtherDuration);
+            }
+        }
+
+        return true; // Accommodated and successfully updated duration fields
+    }
+
+    private static boolean isSameDay(Date d1, Date d2) {
+        if (d1 == null || d2 == null) return false;
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(d1);
+        cal2.setTime(d2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    // =========================================================================
+    // --- NEW METHODS: AMENDMENT AND CANCELLATION FEE CALCULATIONS ---
+    // =========================================================================
+
+    /**
+     * Calculates a separate flat handling fee specifically for modifying an existing trip slot.
+     * Formula: Flat rate of £2.50 to process booking modifications.
+     */
+    public static double calculateAmendmentFee(Booking booking) {
+        if (booking == null) return 0.0;
+        return 2.50;
+    }
+
+    /**
+     * Calculates the penalty fee charged when a user cancels an active booking.
+     * Formula: Flat £5.00 base charge + 10% of the normal trip cost.
+     */
+    public static double calculateCancellationFee(Booking booking) {
+        if (booking == null) return 0.0;
+
+        double baseTripPrice = calculatePrice(booking);
+        double fee = 5.00 + (baseTripPrice * 0.10);
+
+        return Math.round(fee * 100.0) / 100.0; // Cleanly round to two decimals
+    }
+}
