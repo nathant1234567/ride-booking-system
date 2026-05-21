@@ -19,27 +19,32 @@ public class PaymentUI extends JFrame {
     private JTextField amountField;
     private JComboBox<String> methodBox;
     private JTextArea outputArea;
+    private JButton payButton;
 
     // Core transaction and data reference objects
     private Payment payment;
     private PriceBreakdown breakdown;
     private Booking booking;
+    private Booking originalBooking;
 
-    // Fixed primitive variables to keep track of the booking's original state
+    // Fixed primitive types to ensure secure millisecond timestamp validation
     private long originalDateMs;
     private long originalTimeMs;
 
-    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
+    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking) {
         this.payment = payment;
         this.breakdown = breakdown;
         this.booking = booking;
+        this.originalBooking = originalBooking;
 
         // Freeze the window size so it doesn't stretch or break the layout
         setResizable(false);
 
-        // Capture the booking's current date and time as numbers so we can detect changes later
-        this.originalDateMs = booking.getDate() != null ? booking.getDate().getTime() : 0L;
-        this.originalTimeMs = booking.getTime() != null ? booking.getTime().getTime() : 0L;
+        // Cache exact historical primitives safely to prevent pointer mutations
+        // If we have an original booking (amendment), use its date/time for comparison
+        Booking reference = (originalBooking != null) ? originalBooking : booking;
+        this.originalDateMs = reference.getDate() != null ? reference.getDate().getTime() : 0L;
+        this.originalTimeMs = reference.getTime() != null ? reference.getTime().getTime() : 0L;
 
         // Setup the basic frame layout and window title
         setTitle("Payment UI");
@@ -58,8 +63,7 @@ public class PaymentUI extends JFrame {
         methodBox = new JComboBox<>(new String[]{"card", "bank"});
         add(methodBox);
 
-        // Core interactive button fields
-        JButton payButton = new JButton("Pay");
+        payButton = new JButton("Pay");
         add(payButton);
 
         JButton cancelBtn = new JButton("Cancel");
@@ -74,6 +78,7 @@ public class PaymentUI extends JFrame {
         JButton discountButton = new JButton("Apply Discount");
         add(discountButton);
 
+        // Explicit traditional listener definition blocks to completely bypass lambda type-checking bugs
         discountButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -154,9 +159,11 @@ public class PaymentUI extends JFrame {
      * Handles the transaction click events and prints out an itemised receipt
      */
     private void handlePayment() {
+        payButton.setEnabled(false);
         String amountText = amountField.getText().trim();
         if (amountText.isEmpty()) {
             outputArea.setText("Please enter an amount.");
+            payButton.setEnabled(true);
             return;
         }
 
@@ -166,6 +173,7 @@ public class PaymentUI extends JFrame {
 
             if (method == null) {
                 outputArea.setText("Please select a payment method.");
+                payButton.setEnabled(true);
                 return;
             }
 
@@ -196,16 +204,24 @@ public class PaymentUI extends JFrame {
 
                 outputArea.setText(sb.toString());
 
-                // Force our dashboard view to refresh lists automatically
+                // Finalize the booking in the repository only after payment success
+                if (originalBooking != null) {
+                    BookingRepository.updateBooking(originalBooking, this.booking);
+                } else {
+                    BookingService.saveBooking(this.booking);
+                }
+
                 if (ManageBookingsUI.getInstance() != null) {
                     ManageBookingsUI.getInstance().loadBookings();
                 }
             } else {
                 outputArea.setText("Payment Failed. Invalid input or method.");
+                payButton.setEnabled(true);
             }
 
         } catch (NumberFormatException e) {
             outputArea.setText("Invalid amount entry processing error.");
+            payButton.setEnabled(true);
         }
     }
 
