@@ -3,6 +3,10 @@ package classes;
 import java.util.Date;
 
 public class Booking {
+    /**
+     * Class representing a booking request made by the user which includes fields like destination, timing
+     * and luggage.
+     */
     private User user;
     private String destination;
     private String pickupLocation;
