@@ -1,6 +1,9 @@
 package classes;
 
 public class User {
+    /**
+     * Class representing a user of the system. Users are currently hard coded in the repository.
+     */
     private String username;
     private String email;
     private String phoneNumber;

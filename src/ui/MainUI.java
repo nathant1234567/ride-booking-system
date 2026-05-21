@@ -3,6 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainUI extends JFrame {
+    /**
+     * The main UI of the application. It is the parent of all the tabs which live in seperate files.
+     */
     public MainUI() {
         setTitle("COMP5009 Rideshare app");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
