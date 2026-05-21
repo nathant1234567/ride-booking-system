@@ -27,4 +27,13 @@ public class BookingRepository {
         );
     }
 
+    public static boolean updateBooking(Booking original, Booking updated) {
+        int idx = bookings.indexOf(original);
+        if (idx >= 0) {
+            bookings.set(idx, updated);
+            System.out.println("Booking updated: " + updated);
+            return true;
+        }
+        return false;
+    }
 }
