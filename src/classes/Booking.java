@@ -8,7 +8,7 @@ public class Booking {
     private String pickupLocation;
     private int lengthEstimate;
     private int numberOfPassengers;
-    private int amountOfLuggage;
+    private int numberOfLuggage;
     private Date date;
     private Date time;
     private Trip trip;
@@ -19,13 +19,15 @@ public class Booking {
         this.pickupLocation = pickupLocation;
         this.lengthEstimate = lengthEstimate;
         this.numberOfPassengers = numberOfPassengers;
-        this.amountOfLuggage = amountOfLuggage;
+        this.numberOfLuggage = numberOfLuggage;
         this.date = date;
         this.time = time;
     }
 
-    public Trip getTrip() { return trip; }
-    public void setTrip(Trip trip) { this.trip = trip; }
+    // Backwards-compatible constructor (no luggage specified)
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, Date date, Date time) {
+        this(user, destination, pickupLocation, lengthEstimate, numberOfPassengers, 0, date, time);
+    }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
@@ -42,8 +44,8 @@ public class Booking {
     public int getNumberOfPassengers() { return numberOfPassengers; }
     public void setNumberOfPassengers(int numberOfPassengers) { this.numberOfPassengers = numberOfPassengers; }
 
-    public int getAmountOfLuggage() { return amountOfLuggage; }
-    public void setAmountOfLuggage(int amountOfLuggage) { this.amountOfLuggage = amountOfLuggage; }
+    public int getNumberOfLuggage() { return numberOfLuggage; }
+    public void setNumberOfLuggage(int numberOfLuggage) { this.numberOfLuggage = numberOfLuggage; }
 
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
@@ -59,6 +61,7 @@ public class Booking {
                 ", pickupLocation='" + pickupLocation + '\'' +
                 ", lengthEstimate=" + lengthEstimate +
                 ", numberOfPassengers=" + numberOfPassengers +
+                ", numberOfLuggage=" + numberOfLuggage +
                 ", date=" + date +
                 ", time=" + time +
                 '}';
