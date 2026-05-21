@@ -18,9 +18,14 @@ public class PaymentUI extends JFrame {
     private PriceBreakdown breakdown;
     private Booking booking;
 
+<<<<<<< HEAD
     // Save state variables to detect real scheduling alterations
     private java.util.Date originalDate;
     private java.util.Date originalTime;
+=======
+    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
+        setResizable(false);
+>>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
         this.payment = payment;
@@ -55,10 +60,18 @@ public class PaymentUI extends JFrame {
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
 
+        JButton discountButton = new JButton("Apply Discount");
+        add(discountButton);
+
+        discountButton.addActionListener(e -> {
+            DiscountUI.launch(amountField, discountButton);
+        });
+
         JButton amendBtn = new JButton("Amend this Booking");
         amendBtn.setEnabled(true); // Enabled so users can change choices before paying
         add(amendBtn);
 
+<<<<<<< HEAD
         // --- DYNAMIC PRICE CALCULATION ON LOAD ---
         refreshDisplayAmount();
 
@@ -74,6 +87,11 @@ public class PaymentUI extends JFrame {
                 this.dispose();
             }
         });
+=======
+        amendBtn.addActionListener(e -> openQuickAmendDialog());
+
+        payButton.addActionListener(e -> handlePayment(amendBtn));
+>>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
     }
 
     /**
@@ -173,4 +191,8 @@ public class PaymentUI extends JFrame {
 
         dialog.setVisible(true);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
