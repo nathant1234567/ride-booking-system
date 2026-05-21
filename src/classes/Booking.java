@@ -8,17 +8,24 @@ public class Booking {
     private String pickupLocation;
     private int lengthEstimate;
     private int numberOfPassengers;
+    private int numberOfLuggage;
     private Date date;
     private Date time;
 
-    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, Date date, Date time) {
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time) {
         this.user = user;
         this.destination = destination;
         this.pickupLocation = pickupLocation;
         this.lengthEstimate = lengthEstimate;
         this.numberOfPassengers = numberOfPassengers;
+        this.numberOfLuggage = numberOfLuggage;
         this.date = date;
         this.time = time;
+    }
+
+    // Backwards-compatible constructor (no luggage specified)
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, Date date, Date time) {
+        this(user, destination, pickupLocation, lengthEstimate, numberOfPassengers, 0, date, time);
     }
 
     public User getUser() { return user; }
@@ -36,6 +43,9 @@ public class Booking {
     public int getNumberOfPassengers() { return numberOfPassengers; }
     public void setNumberOfPassengers(int numberOfPassengers) { this.numberOfPassengers = numberOfPassengers; }
 
+    public int getNumberOfLuggage() { return numberOfLuggage; }
+    public void setNumberOfLuggage(int numberOfLuggage) { this.numberOfLuggage = numberOfLuggage; }
+
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
 
@@ -50,6 +60,7 @@ public class Booking {
                 ", pickupLocation='" + pickupLocation + '\'' +
                 ", lengthEstimate=" + lengthEstimate +
                 ", numberOfPassengers=" + numberOfPassengers +
+                ", numberOfLuggage=" + numberOfLuggage +
                 ", date=" + date +
                 ", time=" + time +
                 '}';

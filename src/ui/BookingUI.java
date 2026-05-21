@@ -4,6 +4,7 @@ import classes.Booking;
 import classes.Payment;
 import classes.User;
 import service.BookingService;
+import classes.PriceBreakdown;
 import repository.UserRepository;
 
 import javax.swing.*;
@@ -50,6 +51,12 @@ public class BookingUI extends JPanel {
         JSpinner passengerSpinner = new JSpinner(passengerModel);
         inputPanel.add(passengerSpinner);
 
+        // Luggage
+        inputPanel.add(new JLabel("Number of Luggage Items:"));
+        SpinnerNumberModel luggageModel = new SpinnerNumberModel(0, 0, 10, 1);
+        JSpinner luggageSpinner = new JSpinner(luggageModel);
+        inputPanel.add(luggageSpinner);
+
         // Date
         inputPanel.add(new JLabel("Date:"));
         SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
@@ -72,7 +79,7 @@ public class BookingUI extends JPanel {
 
         JButton saveButton = new JButton("Save Booking");
         saveButton.setBackground(new Color(70, 130, 180));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setForeground(Color.BLACK);
         saveButton.setFont(new Font("Arial", Font.BOLD, 14));
 
         saveButton.addActionListener(event -> {
@@ -80,6 +87,7 @@ public class BookingUI extends JPanel {
             String destination = (String) destinationComboBox.getSelectedItem();
             String pickupLocation = pickupField.getText();
             int passengers = (int) passengerSpinner.getValue();
+            int luggage = (int) luggageSpinner.getValue();
             Date date = (Date) dateSpinner.getValue();
             Date time = (Date) timeSpinner.getValue();
 
@@ -100,12 +108,14 @@ public class BookingUI extends JPanel {
                 return;
             }
 
-            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, date, time);
+            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time);
             BookingService.saveBooking(booking);
-            JOptionPane.showMessageDialog(this, "Loading to the payment screen...");
+            // calculate price (with potential default discounts) and open payment screen with the breakdown
+            PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null);
+            JOptionPane.showMessageDialog(this, String.format("Estimated price: £%.2f - Loading payment screen...", breakdown.getFinalTotal()));
 
             Payment payment = new Payment();
-            PaymentUI paymentUI = new PaymentUI(payment);
+            PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking);
             paymentUI.setVisible(true);
         });
 
