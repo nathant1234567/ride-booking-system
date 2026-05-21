@@ -60,10 +60,11 @@ public class PaymentUI extends JFrame {
         JButton discountButton = new JButton("Apply Discount");
         add(discountButton);
 
-        // Explicit traditional listener definition blocks to completely bypass lambda type-checking bugs
         discountButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
+                // Passed in the text field so the calculator could update the price on screen and passed in the
+                // button so the calculator could disable it and stop the discount from looping.
                 DiscountUI.launch(amountField, discountButton);
             }
         });
@@ -86,7 +87,10 @@ public class PaymentUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 handlePayment();
+                // Froze the price once the transaction is done so the total can't be changed
+                discountButton.setEnabled(false);
             }
+
         });
 
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
