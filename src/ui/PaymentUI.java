@@ -18,23 +18,20 @@ public class PaymentUI extends JFrame {
     private PriceBreakdown breakdown;
     private Booking booking;
 
-<<<<<<< HEAD
-    // Save state variables to detect real scheduling alterations
-    private java.util.Date originalDate;
-    private java.util.Date originalTime;
-=======
-    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
-        setResizable(false);
->>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
+    // Fixed primitive types to ensure secure millisecond timestamp validation
+    private long originalDateMs;
+    private long originalTimeMs;
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking) {
         this.payment = payment;
         this.breakdown = breakdown;
         this.booking = booking;
 
-        // Cache historical timestamps to determine if a real change occurred
-        this.originalDate = booking.getDate();
-        this.originalTime = booking.getTime();
+        setResizable(false);
+
+        // Cache exact historical primitives safely to prevent pointer mutations
+        this.originalDateMs = booking.getDate() != null ? booking.getDate().getTime() : 0L;
+        this.originalTimeMs = booking.getTime() != null ? booking.getTime().getTime() : 0L;
 
         setTitle("Payment UI");
         setSize(420, 340);
@@ -63,48 +60,61 @@ public class PaymentUI extends JFrame {
         JButton discountButton = new JButton("Apply Discount");
         add(discountButton);
 
-        discountButton.addActionListener(e -> {
-            DiscountUI.launch(amountField, discountButton);
+        // Explicit traditional listener definition blocks to completely bypass lambda type-checking bugs
+        discountButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                DiscountUI.launch(amountField, discountButton);
+            }
         });
 
         JButton amendBtn = new JButton("Amend this Booking");
-        amendBtn.setEnabled(true); // Enabled so users can change choices before paying
+        amendBtn.setEnabled(true);
         add(amendBtn);
 
-<<<<<<< HEAD
-        // --- DYNAMIC PRICE CALCULATION ON LOAD ---
         refreshDisplayAmount();
 
-        // Click listeners recalculate live data on event trigger
-        amendBtn.addActionListener(e -> openQuickAmendDialog(this, this.booking));
-        payButton.addActionListener(e -> handlePayment());
-
-        cancelBtn.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to cancel this payment?",
-                    "Cancel Payment", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                this.dispose();
+        final PaymentUI selfRef = this;
+        amendBtn.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                openQuickAmendDialog(selfRef, selfRef.booking);
             }
         });
-=======
-        amendBtn.addActionListener(e -> openQuickAmendDialog());
 
-        payButton.addActionListener(e -> handlePayment(amendBtn));
->>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
+        payButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                handlePayment();
+            }
+        });
+
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(selfRef,
+                        "Are you sure you want to cancel this payment?",
+                        "Cancel Payment", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    selfRef.dispose();
+                }
+            }
+        });
     }
 
-    /**
-     * Recalculates price parameters.
-     * Enforces the Amendment Fee ONLY if the Date or Time has actually been altered.
-     */
+    private boolean isBookingAltered() {
+        if (this.booking == null || this.booking.getDate() == null || this.booking.getTime() == null) {
+            return false;
+        }
+        return (this.booking.getDate().getTime() != originalDateMs) ||
+                (this.booking.getTime().getTime() != originalTimeMs);
+    }
+
     public void refreshDisplayAmount() {
-        // 1. Recalculate price parameters with latest booking details
         this.breakdown = BookingService.calculatePriceWithDiscount(this.booking, null);
 
-        // 2. Conditionally apply the fee only if scheduling metrics differ
         double amendmentFee = 0.0;
-        if (!this.booking.getDate().equals(originalDate) || !this.booking.getTime().equals(originalTime)) {
+        if (isBookingAltered()) {
             amendmentFee = BookingService.calculateAmendmentFee(this.booking);
         }
 
@@ -131,9 +141,8 @@ public class PaymentUI extends JFrame {
             boolean success = payment.processPayment(activeAmount, method);
 
             if (success) {
-                // Determine whether to display the amendment handling charge line item
                 double amendmentFee = 0.0;
-                if (!this.booking.getDate().equals(originalDate) || !this.booking.getTime().equals(originalTime)) {
+                if (isBookingAltered()) {
                     amendmentFee = BookingService.calculateAmendmentFee(this.booking);
                 }
 
@@ -169,7 +178,7 @@ public class PaymentUI extends JFrame {
     public static void openQuickAmendDialog(Component parent, Booking booking) {
         if (booking == null) return;
 
-        Window activeWindow = SwingUtilities.getWindowAncestor(parent);
+        final Window activeWindow = SwingUtilities.getWindowAncestor(parent);
         JDialog dialog = new JDialog(activeWindow, "Amend " + booking.toString(), Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setSize(600, 520);
         dialog.setLocationRelativeTo(parent);
@@ -178,11 +187,9 @@ public class PaymentUI extends JFrame {
         AmendBookingUI amendPanel = new AmendBookingUI();
         dialog.add(amendPanel, BorderLayout.CENTER);
 
-        // --- REFRESH ACTION DETECTOR ON WINDOW CLOSURE ---
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
-                // If parent context is a PaymentUI instance, refresh the visible price calculations
                 if (activeWindow instanceof PaymentUI) {
                     ((PaymentUI) activeWindow).refreshDisplayAmount();
                 }
@@ -191,8 +198,4 @@ public class PaymentUI extends JFrame {
 
         dialog.setVisible(true);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7a7a2ab461d35df26b30a123bcde9d31e4f1513c
