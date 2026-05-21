@@ -18,6 +18,15 @@ public class BookingRepository {
         return new ArrayList<>(bookings);
     }
 
+    public static void removeBooking(Booking booking) {
+
+        bookings.remove(booking);
+
+        System.out.println(
+                "Booking cancelled: " + booking
+        );
+    }
+
     public static boolean updateBooking(Booking original, Booking updated) {
         int idx = bookings.indexOf(original);
         if (idx >= 0) {
