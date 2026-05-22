@@ -1,6 +1,9 @@
 package classes;
 
 public class PriceBreakdown {
+    /**
+     * Class to represent the price breakdown of a trip, including base price, fees, discounts, and final total.
+     */
     private double base;
     private double passengerFee;
     private double luggageFee;
