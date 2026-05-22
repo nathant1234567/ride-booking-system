@@ -5,6 +5,9 @@ import classes.Booking;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to set up the booking repo. You can remove and update bookings as well.
+ */
 public class BookingRepository {
     private static List<Booking> bookings = new ArrayList<>();
 

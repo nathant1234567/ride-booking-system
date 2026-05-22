@@ -95,6 +95,12 @@ public class BookingService {
         return new PriceBreakdown(base, passengerFee, luggageFee, subtotal, totalDiscountPercent, discountAmount, finalTotal, desc.toString().trim());
     }
 
+    /**
+     * Function to calcualte estimate durantion of the trip based on factors hard coded here
+     * @param booking
+     * @param luggageAmount
+     * @return
+     */
     public static int bookingLengthCalculator(Booking booking, int luggageAmount) {
         double distance = booking.getLengthEstimate();
         double averageSpeed = 50.0;
@@ -112,6 +118,11 @@ public class BookingService {
         return (int) Math.round(duration);
     }
 
+    /**
+     * A simple traffic simulator based on what time of day the user selects. For eg. rush hour will be longer
+     * @param time
+     * @return
+     */
     private static double getTrafficMultiplier(Date time) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(time);
