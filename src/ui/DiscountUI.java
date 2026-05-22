@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class DiscountUI {
+    // Took in the payment field and source button as parameters so the calculator window could directly
+    // update the price on the main payment screen and control the button state.
     public static void launch(JTextField paymentAmountField, JButton sourceButton) {
         JFrame frame = new JFrame("Discount Calculator");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -46,6 +48,8 @@ public class DiscountUI {
         frame.add(new JLabel(""));
         frame.add(applyButton);
 
+        // This extracted the user inputs and fed them into the discount calculator logic and wrapped
+        // it in a try catch block to safely handle any invalid text inputs without crashing the application.
 
         calcButton.addActionListener(new ActionListener() {
             @Override
@@ -64,6 +68,9 @@ public class DiscountUI {
             }
         });
 
+        // This injects the new price back into the parent window and disabled the source button as
+        // a kill switch to permanently lock the discount button and prevent the double-dipping bug.
+
         applyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,13 +88,4 @@ public class DiscountUI {
     }
 }
 
-//add apply button to the ui after the user calculates then clicks apply then there
-// then the price of their current booking changes to the discounted price
 
-//or
-
-// when the user clicks and selects different prices from the drop it
-
-
-//there should be a button on the payment ui where users calculate the amount they get off and then
-// clicks 'apply discount' and then the original amount changes to the discounted price
