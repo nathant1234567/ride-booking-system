@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 public class Trip {
+    /**
+     * Class representing a trip, which can have multiple bookings. The trip has a destination, date, time, and vehicle type.
+     */
     private String id;
     private String destination;
     private Date date;
