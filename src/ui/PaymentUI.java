@@ -102,7 +102,10 @@ public class PaymentUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 handlePayment();
+                // Froze the price once the transaction is done so the total can't be changed
+                discountButton.setEnabled(false);
             }
+
         });
 
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
