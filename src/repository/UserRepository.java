@@ -5,6 +5,10 @@ import classes.User;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to save users.
+ * Hardcoded at the moment to make testing easier.
+ */
 public class UserRepository {
 
     private static final List<User> users = new ArrayList<>();
