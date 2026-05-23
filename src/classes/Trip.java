@@ -12,7 +12,7 @@ public class Trip {
     private String destination;
     private Date date;
     private Date time;
-    private String vehicleType; // e.g., "Standard", "Executive", "Van"
+    private String vehicleType;
     private List<Booking> bookings;
     private int totalDuration;
 
@@ -32,11 +32,28 @@ public class Trip {
     public String getVehicleType() { return vehicleType; }
     public List<Booking> getBookings() { return bookings; }
 
-    public void addBooking(Booking booking) {
+    // Dynamic capacity checks based on vehicle type ---
+    public int getMaxCapacity() {
+        if ("Van".equalsIgnoreCase(vehicleType)) return 8;
+        if ("Executive".equalsIgnoreCase(vehicleType)) return 3;
+        return 4; // Default Standard capacity
+    }
+
+    public int getPassengerCount() {
+        return bookings.stream().mapToInt(Booking::getNumberOfPassengers).sum();
+    }
+
+    // Updated to return boolean to inform the service if the trip was too full
+    public boolean addBooking(Booking booking) {
+        if (getPassengerCount() + booking.getNumberOfPassengers() > getMaxCapacity()) {
+            return false; // trip is full
+        }
         if (!bookings.contains(booking)) {
             bookings.add(booking);
             recalculateDuration();
+            return true;
         }
+        return false;
     }
 
     public void removeBooking(Booking booking) {
@@ -45,13 +62,11 @@ public class Trip {
     }
 
     private void recalculateDuration() {
-        // base duration (first booking) + 10 mins for each extra pickup
         if (bookings.isEmpty()) {
             this.totalDuration = 0;
             return;
         }
-        
-        int baseDuration = bookings.get(0).getLengthEstimate(); // Simplified
+        int baseDuration = bookings.get(0).getLengthEstimate();
         this.totalDuration = baseDuration + ((bookings.size() - 1) * 10);
     }
 
@@ -59,6 +74,6 @@ public class Trip {
 
     @Override
     public String toString() {
-        return "Trip " + id + " to " + destination + " [" + vehicleType + "] - " + bookings.size() + " passengers";
+        return "Trip " + id + " to " + destination + " [" + vehicleType + "] - " + getPassengerCount() + " passengers";
     }
 }
