@@ -108,34 +108,26 @@ public class AmendBookingUI extends JPanel {
                         chosenTime
                 );
 
-                boolean ok = BookingRepository.updateBooking(original, updated);
-                if (ok) {
-                    PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null);
-                    double amendmentFee = BookingService.calculateAmendmentFee(updated);
+                PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null);
+                double amendmentFee = BookingService.calculateAmendmentFee(updated);
 
-                    JOptionPane.showMessageDialog(this, String.format(
-                            "Booking updated successfully!\n" +
-                                    "New Base Price: £%.2f\n" +
-                                    "Amendment Processing Fee: £%.2f",
-                            pb.getFinalTotal(), amendmentFee
-                    ));
+                JOptionPane.showMessageDialog(this, String.format(
+                        "Booking amendment validated!\n" +
+                                "New Base Price: £%.2f\n" +
+                                "Amendment Processing Fee: £%.2f\n" +
+                                "Redirecting to payment to finalize changes.",
+                        pb.getFinalTotal(), amendmentFee
+                ));
 
-                    bookingCombo.removeAllItems();
-                    for (Booking b : BookingRepository.getBookings()) bookingCombo.addItem(b);
-
-                    Window topWindow = SwingUtilities.getWindowAncestor(this);
-                    if (topWindow != null) {
-                        topWindow.dispose();
-                    }
-
-                    classes.Payment paymentContext = new classes.Payment();
-                    PaymentUI paymentWindow = new PaymentUI(paymentContext, pb, updated);
-                    paymentWindow.setLocationRelativeTo(this);
-                    paymentWindow.setVisible(true);
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to update booking", "Error", JOptionPane.ERROR_MESSAGE);
+                Window topWindow = SwingUtilities.getWindowAncestor(this);
+                if (topWindow != null) {
+                    topWindow.dispose();
                 }
+
+                classes.Payment paymentContext = new classes.Payment();
+                PaymentUI paymentWindow = new PaymentUI(paymentContext, pb, updated, original);
+                paymentWindow.setLocationRelativeTo(this);
+                paymentWindow.setVisible(true);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error processing changes: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }

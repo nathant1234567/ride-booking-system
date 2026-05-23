@@ -153,13 +153,12 @@ public class BookingUI extends JPanel {
             }
 
             Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time);
-            BookingService.saveBooking(booking);
             // calculate price (with potential default discounts) and open payment screen with the breakdown
             PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null);
             JOptionPane.showMessageDialog(this, String.format("Estimated price: £%.2f - Loading payment screen...", breakdown.getFinalTotal()));
 
             Payment payment = new Payment();
-            PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking);
+            PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking, null);
             paymentUI.setVisible(true);
         });
 
