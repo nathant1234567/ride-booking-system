@@ -57,6 +57,9 @@ public class Booking {
     public Date getTime() { return time; }
     public void setTime(Date time) { this.time = time; }
 
+    public Trip getTrip() { return trip; }
+    public void setTrip(Trip trip) { this.trip = trip; }
+
     // --- NEW CLEAN DISPLAY STRING FOR THE JCOMBOBOX DROPDOWN ---
     @Override
     public String toString() {
