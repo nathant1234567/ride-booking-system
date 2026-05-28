@@ -13,7 +13,6 @@ public class MainUI extends JFrame {
         setResizable(false);
 
         BookingUI bookingUI = new BookingUI();
-
         ManageBookingsUI manageBookingsUI = new ManageBookingsUI();
 
         JTabbedPane tabbedPane = new JTabbedPane();
