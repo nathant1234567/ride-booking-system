@@ -9,6 +9,9 @@ import java.awt.*;
 import java.util.Date;
 
 public class AmendBookingUI extends JPanel {
+    /**
+     * JPanel interface to create a form to amend the booking
+     */
 
     private JComboBox<Booking> bookingCombo;
 
