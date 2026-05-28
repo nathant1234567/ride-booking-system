@@ -86,22 +86,27 @@ public class PaymentUI extends JFrame {
             }
         });
 
-        // Setup the amendment trigger button
-        JButton amendBtn = new JButton("Amend this Booking");
-        amendBtn.setEnabled(true);
-        add(amendBtn);
+        // Setup the amendment trigger button if this is an amendment flow
+        if (originalBooking != null) {
+            JButton amendBtn = new JButton("Amend this Booking");
+            amendBtn.setEnabled(true);
+            add(amendBtn);
+
+            // Standard listeners to execute our window interactions smoothly
+            final PaymentUI selfRefForAmend = this;
+            amendBtn.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    openQuickAmendDialog(selfRefForAmend, selfRefForAmend.booking);
+                }
+            });
+        }
 
         // Refresh the displayed cost box to calculate the dynamic totals on load
         refreshDisplayAmount();
 
         // Standard listeners to execute our window interactions smoothly
         final PaymentUI selfRef = this;
-        amendBtn.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                openQuickAmendDialog(selfRef, selfRef.booking);
-            }
-        });
 
         payButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
