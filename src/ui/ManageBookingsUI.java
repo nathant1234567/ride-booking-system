@@ -117,9 +117,9 @@ public class ManageBookingsUI extends JPanel {
 
             double cancellationFee = BookingService.calculateCancellationFee(booking);
 
-            String msg = String.format(
-                    "Are you sure you'd like to cancel this booking?\n" +
-                            "A penalty cancellation fee of £%.2f will be applied.",
+            String msg = String.format("""
+                                       Are you sure you'd like to cancel this booking?
+                                       A penalty cancellation fee of \u00a3%.2f will be applied.""",
                     cancellationFee
             );
 
