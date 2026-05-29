@@ -94,7 +94,27 @@ public class ManageBookingsUI extends JPanel {
 
         // --- STEP 2: CANCEL MECHANISM ENFORCING DISTINCT CANCELLATION FEE LOGIC ---
         cancelButton.addActionListener(e -> {
-            // Calculate specific cancellation fee using your backend business rule
+
+            Date currentDate = new Date();
+
+            long difference =
+                    booking.getDate().getTime()
+                            - currentDate.getTime();
+
+            long hoursUntilBooking =
+                    difference / (1000 * 60 * 60);
+
+            if (hoursUntilBooking < 24) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Bookings cannot be cancelled within 24 hours."
+                );
+
+                return;
+            }
+
+
             double cancellationFee = BookingService.calculateCancellationFee(booking);
 
             String msg = String.format(
