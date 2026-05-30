@@ -12,6 +12,7 @@ import service.BookingService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Date;
 import java.util.List;
 
 public class ManageBookingsUI extends JPanel {
