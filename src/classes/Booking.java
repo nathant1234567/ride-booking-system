@@ -17,7 +17,7 @@ public class Booking {
     private Date time;
     private Trip trip;
 
-    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int amountOfLuggage, Date date, Date time) {
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time) {
         this.user = user;
         this.destination = destination;
         this.pickupLocation = pickupLocation;
