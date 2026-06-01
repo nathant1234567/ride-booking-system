@@ -1,6 +1,6 @@
 package repository;
 
-import classes.Trip;
+import model.Trip;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

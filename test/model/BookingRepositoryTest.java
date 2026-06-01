@@ -1,7 +1,5 @@
-package classes;
+package model;
 
-import classes.Booking;
-import classes.User;
 import repository.BookingRepository;
 
 // --- REMOVE JUPITER AND ADD WORKING JUNIT 4 IMPORTS ---

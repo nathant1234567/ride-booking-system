@@ -1,6 +1,6 @@
 package service;
 
-import classes.Booking;
+import model.Booking;
 
 /**
  * Implementation of NotificationService that prints messages to the console.

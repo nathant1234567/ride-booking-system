@@ -1,11 +1,9 @@
 package ui;
 
-import classes.Booking;
+import model.Booking;
 import repository.BookingRepository;
 
 // --- PACKAGES LOADED FOR EXTENDED WORKFLOW HANDLERS ---
-import classes.PriceBreakdown;
-import classes.Payment;
 import service.BookingService;
 // -----------------------------------------------------------
 

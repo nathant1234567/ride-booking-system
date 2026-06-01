@@ -1,6 +1,6 @@
 package service;
 
-import classes.Booking;
+import model.Booking;
 
 /**
  * Interface for sending confirmation and update messages.

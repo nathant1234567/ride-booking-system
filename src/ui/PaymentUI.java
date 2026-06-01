@@ -2,10 +2,9 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
-import classes.Booking;
-import classes.Payment;
-import classes.PriceBreakdown;
-import repository.BookingRepository;
+import model.Booking;
+import model.Payment;
+import model.PriceBreakdown;
 import service.BookingService;
 
 public class PaymentUI extends JFrame {

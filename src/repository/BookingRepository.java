@@ -1,6 +1,6 @@
 package repository;
 
-import classes.Booking;
+import model.Booking;
 
 import java.util.ArrayList;
 import java.util.List;

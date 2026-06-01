@@ -1,10 +1,10 @@
 package ui;
 
-import classes.Booking;
-import classes.Payment;
-import classes.User;
+import model.Booking;
+import model.Payment;
+import model.User;
 import service.BookingService;
-import classes.PriceBreakdown;
+import model.PriceBreakdown;
 import repository.UserRepository;
 
 import javax.swing.*;

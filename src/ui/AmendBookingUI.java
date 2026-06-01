@@ -1,7 +1,7 @@
 package ui;
 
-import classes.Booking;
-import classes.PriceBreakdown;
+import model.Booking;
+import model.PriceBreakdown;
 import repository.BookingRepository;
 import service.BookingService;
 import javax.swing.*;
@@ -127,7 +127,7 @@ public class AmendBookingUI extends JPanel {
                     topWindow.dispose();
                 }
 
-                classes.Payment paymentContext = new classes.Payment();
+                model.Payment paymentContext = new model.Payment();
                 PaymentUI paymentWindow = new PaymentUI(paymentContext, pb, updated, original);
                 paymentWindow.setLocationRelativeTo(this);
                 paymentWindow.setVisible(true);

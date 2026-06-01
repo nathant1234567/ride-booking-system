@@ -1,7 +1,7 @@
 package service;
 
-import classes.Booking;
-import classes.PriceBreakdown;
+import model.Booking;
+import model.PriceBreakdown;
 import repository.BookingRepository;
 
 import java.util.Calendar;

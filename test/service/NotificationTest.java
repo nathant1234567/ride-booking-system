@@ -1,7 +1,7 @@
 package service;
 
-import classes.Booking;
-import classes.User;
+import model.Booking;
+import model.User;
 import org.junit.Before;
 import org.junit.Test;
 import repository.BookingRepository;

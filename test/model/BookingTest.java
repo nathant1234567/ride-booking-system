@@ -1,4 +1,4 @@
-package classes;
+package model;
 
 // --- REMOVE JUPITER PACKAGES AND ADD JUNIT 4 IMPORTS ---
 import org.junit.Test;
