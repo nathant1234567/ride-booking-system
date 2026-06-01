@@ -14,7 +14,6 @@ public class BookingRepository {
 
     public static void addBooking(Booking booking) {
         bookings.add(booking);
-        System.out.println("Confirmation message: Booking added: " + booking);
     }
 
     public static List<Booking> getBookings() {
@@ -22,19 +21,13 @@ public class BookingRepository {
     }
 
     public static void removeBooking(Booking booking) {
-
         bookings.remove(booking);
-
-        System.out.println(
-                "Confirmation message: Booking cancelled: " + booking
-        );
     }
 
     public static boolean updateBooking(Booking original, Booking updated) {
         int idx = bookings.indexOf(original);
         if (idx >= 0) {
             bookings.set(idx, updated);
-            System.out.println("Confirmation message: Booking updated: " + updated);
             return true;
         }
         return false;

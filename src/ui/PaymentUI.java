@@ -211,7 +211,7 @@ public class PaymentUI extends JFrame {
 
                 // Finalize the booking in the repository only after payment success
                 if (originalBooking != null) {
-                    BookingRepository.updateBooking(originalBooking, this.booking);
+                    BookingService.updateBooking(originalBooking, this.booking);
                 } else {
                     BookingService.saveBooking(this.booking);
                 }

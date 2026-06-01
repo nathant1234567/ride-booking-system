@@ -15,8 +15,58 @@ public class BookingService {
      * @param booking
      */
 
+    private static NotificationService notificationService = new ConsoleNotificationService();
+
+    public static void setNotificationService(NotificationService service) {
+        notificationService = service;
+    }
+
     public static void saveBooking(Booking booking) {
         BookingRepository.addBooking(booking);
+        notificationService.sendNotification(booking, "Booking confirmation: Your booking has been successfully created.");
+
+        // Notify others if they are on the same trip
+        notifyAffectedUsers(booking, "A new passenger has joined your trip. Trip duration may have changed.");
+    }
+
+    /**
+     * Cancels a booking and notifies the user and any affected trip-mates.
+     */
+    public static void cancelBooking(Booking booking) {
+        BookingRepository.removeBooking(booking);
+        notificationService.sendNotification(booking, "Cancellation confirmation: Your booking has been cancelled.");
+
+        // Notify others on the same trip
+        notifyAffectedUsers(booking, "A passenger has left your trip. Trip duration may have changed.");
+    }
+
+    /**
+     * Updates a booking and notifies the user and any affected trip-mates.
+     */
+    public static void updateBooking(Booking original, Booking updated) {
+        boolean success = BookingRepository.updateBooking(original, updated);
+        if (success) {
+            notificationService.sendNotification(updated, "Amendment confirmation: Your booking has been successfully updated.");
+
+            // Notify others on the same trip (affected users)
+            notifyAffectedUsers(updated, "The trip schedule or duration has changed due to an amendment by another passenger.");
+        }
+    }
+
+    /**
+     * Identifies and notifies other users on the same trip route and date.
+     */
+    private static void notifyAffectedUsers(Booking triggerBooking, String message) {
+        List<Booking> allBookings = BookingRepository.getBookings();
+        for (Booking other : allBookings) {
+            if (!other.equals(triggerBooking) &&
+                    other.getDestination().equalsIgnoreCase(triggerBooking.getDestination()) &&
+                    other.getPickupLocation().equalsIgnoreCase(triggerBooking.getPickupLocation()) &&
+                    isSameDay(other.getDate(), triggerBooking.getDate())) {
+
+                notificationService.sendNotification(other, message);
+            }
+        }
     }
 
     /**

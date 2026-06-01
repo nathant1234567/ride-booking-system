@@ -133,7 +133,7 @@ public class ManageBookingsUI extends JPanel {
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                BookingRepository.removeBooking(booking);
+                BookingService.cancelBooking(booking);
                 bookingsPanel.remove(card);
                 bookingsPanel.revalidate();
                 bookingsPanel.repaint();
