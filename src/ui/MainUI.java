@@ -14,26 +14,23 @@ public class MainUI extends JFrame {
 
         BookingUI bookingUI = new BookingUI();
         ManageBookingsUI manageBookingsUI = new ManageBookingsUI();
+        ActiveTripsUI activeTripsUI = new ActiveTripsUI();
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
-
         tabbedPane.addTab("Booking", bookingUI); // do this for every page
-
         tabbedPane.addTab("Manage Bookings", manageBookingsUI);
-
+        tabbedPane.addTab("Active Trips (Dispatch)", activeTripsUI);
         tabbedPane.addChangeListener(e -> {
 
-            int selectedIndex =
-                    tabbedPane.getSelectedIndex();
-
-            String selectedTab =
-                    tabbedPane.getTitleAt(selectedIndex);
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            String selectedTab = tabbedPane.getTitleAt(selectedIndex);
 
             if (selectedTab.equals("Manage Bookings")) {
-
                 manageBookingsUI.loadBookings();
+            } else if (selectedTab.equals("Active Trips (Dispatch)")) {
+                activeTripsUI.loadTrips();
             }
         });
         add(tabbedPane, BorderLayout.CENTER);

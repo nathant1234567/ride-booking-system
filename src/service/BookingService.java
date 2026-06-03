@@ -2,11 +2,11 @@ package service;
 
 import model.Booking;
 import model.PriceBreakdown;
+import model.Trip;
 import repository.BookingRepository;
+import repository.TripRepository;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class BookingService {
     /**
@@ -22,11 +22,33 @@ public class BookingService {
     }
 
     public static void saveBooking(Booking booking) {
+        assignToTrip(booking);
         BookingRepository.addBooking(booking);
         notificationService.sendNotification(booking, "Booking confirmation: Your booking has been successfully created.");
 
         // Notify others if they are on the same trip
         notifyAffectedUsers(booking, "A new passenger has joined your trip. Trip duration may have changed.");
+    }
+
+    public static void assignToTrip(Booking booking) {
+        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
+                booking.getDestination(), booking.getDate(), booking.getTime()
+        );
+        boolean addedToTrip = false;
+        if (matchingTrip.isPresent()) {
+            Trip existingTrip = matchingTrip.get();
+            addedToTrip = existingTrip.addBooking(booking);
+            if (addedToTrip) {
+                booking.setTrip(existingTrip);
+            }
+        }
+        if (!addedToTrip) {
+            String newTripID = "TRP-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), "Standard");
+            newTrip.addBooking(booking);
+            booking.setTrip(newTrip);
+            TripRepository.addTrip(newTrip);
+        }
     }
 
     /**
@@ -193,53 +215,22 @@ public class BookingService {
     // --- METHOD: TRIP ACCOMMODATION AND DURATION RECALCULATION CHECK ---
     // =========================================================================
     public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
-        List<Booking> allBookings = BookingRepository.getBookings();
+        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
+                targetBooking.getDestination(), newDate, newTime
+        );
 
-        // 1. CAPACITY CONSTRAINT CHECK
-        int passengerCountOnThisTrip = targetBooking.getNumberOfPassengers();
+        if (matchingTrip.isPresent()) {
+            Trip trip = matchingTrip.get();
+            int currentPassengers = trip.getPassengerCount();
 
-        for (Booking other : allBookings) {
-            // Skip the booking itself
-            if (other.equals(targetBooking)) continue;
-
-            // Check if another user is on the exact same trip route (Destination & Pickup match)
-            if (other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
-                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation())) {
-
-                // Check if they overlap on the same date
-                if (isSameDay(other.getDate(), newDate)) {
-                    passengerCountOnThisTrip += other.getNumberOfPassengers();
-
-                    // Business Rule Example: Total passengers on a shared trip cannot exceed 8
-                    if (passengerCountOnThisTrip > 8) {
-                        return false; // Cannot accommodate the change
-                    }
-                }
+            if (trip.getBookings().contains(targetBooking)) {
+                currentPassengers -= targetBooking.getNumberOfPassengers();
+            }
+            if (currentPassengers + targetBooking.getNumberOfPassengers() > trip.getMaxCapacity()) {
+                return false;
             }
         }
-
-        // 2. DURATION RECALCULATION FOR ALL AFFECTED USERS
-        // Temporarily apply the new time variables to the target booking to recalculate its duration
-        targetBooking.setTime(newTime);
-        targetBooking.setDate(newDate);
-        int newTargetDuration = bookingLengthCalculator(targetBooking, targetBooking.getNumberOfLuggage());
-//        targetBooking.setLengthEstimate(newTargetDuration);
-
-        // Recalculate duration for any other users riding along on this newly selected trip configuration
-        for (Booking other : allBookings) {
-            if (!other.equals(targetBooking) &&
-                    other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
-                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation()) &&
-                    isSameDay(other.getDate(), newDate)) {
-
-                // Synchronize their time window to match the updated route group schedule
-                other.setTime(newTime);
-                int updatedOtherDuration = bookingLengthCalculator(other, other.getNumberOfLuggage());
-//                other.setLengthEstimate(updatedOtherDuration);
-            }
-        }
-
-        return true; // Accommodated and successfully updated duration fields
+        return true;
     }
 
     private static boolean isSameDay(Date d1, Date d2) {

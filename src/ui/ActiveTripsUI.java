@@ -7,8 +7,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
-public class ActiveTripsUI extends JFrame {
+public class ActiveTripsUI extends JPanel {
     /**
      * Displayed generated trips
      * grg
@@ -30,7 +31,7 @@ public class ActiveTripsUI extends JFrame {
         tripsPanel.setLayout(new BoxLayout(tripsPanel, BoxLayout.Y_AXIS));
 
         JScrollPane scrollPane = new JScrollPane(tripsPanel);
-        tripsPanel.add(scrollPane,  BorderLayout.CENTER);
+        add(scrollPane,  BorderLayout.CENTER);
     }
 
     public void loadTrips() {
@@ -69,6 +70,15 @@ public class ActiveTripsUI extends JFrame {
         header.setBackground(Color.WHITE);
         header.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        JLabel idLabel = new JLabel("ID");
+        JLabel idLabel = new JLabel("Trip " + trip.getId() + " to " + trip.getDestination());
+        JLabel badge =  new JLabel(isShared ? " [SHARED VEHICLE]" : "[PRIVATE VEHICLE]");
+        badge.setForeground(isShared ? new Color(34, 139, 34) : Color.GRAY);
+        badge.setFont(new Font("Arial", Font.BOLD, 12));
+
+        header.add(idLabel, BorderLayout.WEST);
+        header.add(badge, BorderLayout.EAST);
+
+        card.add(header, BorderLayout.NORTH);
+        return card;
     }
 }

@@ -31,7 +31,6 @@ public class PaymentUI extends JFrame {
     private long originalTimeMs;
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking) {
-        System.out.println(booking.getLengthEstimate());
         this.payment = payment;
         this.breakdown = breakdown;
         this.booking = booking;
@@ -114,7 +113,6 @@ public class PaymentUI extends JFrame {
                 handlePayment();
                 // Froze the price once the transaction is done so the total can't be changed
                 discountButton.setEnabled(false);
-                System.out.println(booking.getLengthEstimate());
             }
 
         });

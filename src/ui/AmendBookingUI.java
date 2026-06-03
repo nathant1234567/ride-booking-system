@@ -27,7 +27,6 @@ public class AmendBookingUI extends JPanel {
         luggage.setValue(b.getNumberOfLuggage());
         dateSpinner.setValue(b.getDate());
         timeSpinner.setValue(b.getTime());
-        System.out.println(length.getText());
     }
 
     public AmendBookingUI() {
@@ -133,7 +132,6 @@ public class AmendBookingUI extends JPanel {
                 paymentWindow.setLocationRelativeTo(this);
                 paymentWindow.setVisible(true);
 
-                System.out.println(length.getText());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error processing changes: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
