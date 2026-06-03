@@ -223,7 +223,7 @@ public class BookingService {
         targetBooking.setTime(newTime);
         targetBooking.setDate(newDate);
         int newTargetDuration = bookingLengthCalculator(targetBooking, targetBooking.getNumberOfLuggage());
-        targetBooking.setLengthEstimate(newTargetDuration);
+//        targetBooking.setLengthEstimate(newTargetDuration);
 
         // Recalculate duration for any other users riding along on this newly selected trip configuration
         for (Booking other : allBookings) {
@@ -235,7 +235,7 @@ public class BookingService {
                 // Synchronize their time window to match the updated route group schedule
                 other.setTime(newTime);
                 int updatedOtherDuration = bookingLengthCalculator(other, other.getNumberOfLuggage());
-                other.setLengthEstimate(updatedOtherDuration);
+//                other.setLengthEstimate(updatedOtherDuration);
             }
         }
 
