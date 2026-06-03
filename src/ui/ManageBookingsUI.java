@@ -72,7 +72,7 @@ public class ManageBookingsUI extends JPanel {
         card.setPreferredSize(new Dimension(450, 180));
 
         JLabel destinationLabel = new JLabel(booking.getDestination());
-        destinationLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        destinationLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         JLabel pickupLabel = new JLabel("Pickup: " + booking.getPickupLocation());
         JLabel passengersLabel = new JLabel("Passengers: " + booking.getNumberOfPassengers());
