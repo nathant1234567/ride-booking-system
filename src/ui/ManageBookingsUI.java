@@ -98,6 +98,8 @@ public class ManageBookingsUI extends JPanel {
         infoPanel.add(Box.createVerticalStrut(5));
         infoPanel.add(pickupLabel);
         infoPanel.add(passengersLabel);
+        infoPanel.add(dateLabel);
+        infoPanel.add(timeLabel);
 
         JButton amendButton = new JButton("Amend");
         JButton cancelButton = new JButton("Cancel");
