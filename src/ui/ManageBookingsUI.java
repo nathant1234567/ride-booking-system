@@ -101,8 +101,12 @@ public class ManageBookingsUI extends JPanel {
         infoPanel.add(dateLabel);
         infoPanel.add(timeLabel);
 
-        JButton amendButton = new JButton("Amend");
-        JButton cancelButton = new JButton("Cancel");
+        infoPanel.add(Box.createVerticalStrut(10));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        buttonPanel.add(amendButton);
+        buttonPanel.add(cancelButton);
+        infoPanel.add(buttonPanel);
 
         // --- STEP 1: LAUNCH THE RESTRICTED DATE/TIME BOOKING FORM IMMEDIATELY FIRST ---
         amendButton.addActionListener(e -> {
