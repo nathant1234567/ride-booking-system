@@ -77,6 +77,16 @@ public class ManageBookingsUI extends JPanel {
         JLabel pickupLabel = new JLabel("Pickup: " + booking.getPickupLocation());
         JLabel passengersLabel = new JLabel("Passengers: " + booking.getNumberOfPassengers());
 
+        JLabel userLabel = new JLabel("User: " + booking.getUser().getUsername());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        JLabel dateLabel = new JLabel(
+                "Date: " + dateFormat.format(booking.getDate())
+        );
+        JLabel timeLabel = new JLabel(
+                "Time: " + timeFormat.format(booking.getTime())
+        );
+
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.add(destinationLabel);
