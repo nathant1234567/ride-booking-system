@@ -161,7 +161,7 @@ public class ManageBookingsUI extends JPanel {
             }
         });
 
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         buttonPanel.add(amendButton);
         buttonPanel.add(cancelButton);
 
