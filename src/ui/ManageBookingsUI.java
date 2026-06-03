@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 public class ManageBookingsUI extends JPanel {
 
