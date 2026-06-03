@@ -89,6 +89,11 @@ public class ManageBookingsUI extends JPanel {
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+
+        JButton amendButton = new JButton("Amend");
+        JButton cancelButton = new JButton("Cancel");
+
+        infoPanel.add(userLabel);
         infoPanel.add(destinationLabel);
         infoPanel.add(Box.createVerticalStrut(5));
         infoPanel.add(pickupLabel);
