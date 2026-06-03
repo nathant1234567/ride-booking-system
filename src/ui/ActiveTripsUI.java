@@ -1,5 +1,6 @@
 package ui;
 
+import model.Booking;
 import model.Trip;
 import repository.TripRepository;
 
@@ -78,7 +79,29 @@ public class ActiveTripsUI extends JPanel {
         header.add(idLabel, BorderLayout.WEST);
         header.add(badge, BorderLayout.EAST);
 
+        JPanel info = new JPanel();
+        info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
+        info.setBackground(Color.WHITE);
+
+        info.add(new JLabel("Departure Date: " + dateFormat.format(trip.getDate()) + " @ " + timeFormat.format(trip.getTime())));
+
+        JLabel capacityLbl = new JLabel("Capacity: " + trip.getPassengerCount() + " / " + trip.getMaxCapacity() + " (Vehicle: " + trip.getVehicleType() + ")");
+        if (trip.getPassengerCount() == trip.getMaxCapacity()) {
+            capacityLbl.setForeground(Color.RED);
+        }
+        info.add(capacityLbl);
+
+        info.add(Box.createVerticalStrut(10));
+        info.add(new JLabel("Assigned Bookings:"));
+
+        for (Booking b : trip.getBookings()) {
+            JLabel bLabel = new JLabel(" - " + b.getUser().getUsername() + " (" + b.getNumberOfPassengers() + " pass) from " + b.getPickupLocation());
+            bLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            info.add(bLabel);
+        }
+
         card.add(header, BorderLayout.NORTH);
+        card.add(info, BorderLayout.CENTER);
         return card;
     }
 }
