@@ -68,7 +68,8 @@ public class ManageBookingsUI extends JPanel {
         JPanel card = new JPanel();
         card.setLayout(new BorderLayout());
         card.setBorder(new EmptyBorder(10, 10, 10, 10));
-        card.setMaximumSize(new Dimension(500, 120));
+        card.setMaximumSize(new Dimension(450, 180));
+        card.setPreferredSize(new Dimension(450, 180));
 
         JLabel destinationLabel = new JLabel(booking.getDestination());
         destinationLabel.setFont(new Font("Arial", Font.BOLD, 18));
