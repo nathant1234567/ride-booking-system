@@ -18,10 +18,10 @@ public class ManageBookingsUI extends JPanel {
 
     private JPanel bookingsPanel;
 
-    // --- TRACK STATIC SYSTEM INSTANCE ---
+
     private static ManageBookingsUI activeInstance;
 
-    // --- ACCESSIBILITY HELPER FOR REFRESHES ---
+
     public static ManageBookingsUI getInstance() {
         return activeInstance;
     }
@@ -109,12 +109,10 @@ public class ManageBookingsUI extends JPanel {
         buttonPanel.add(cancelButton);
         infoPanel.add(buttonPanel);
 
-        // --- STEP 1: LAUNCH THE RESTRICTED DATE/TIME BOOKING FORM IMMEDIATELY FIRST ---
         amendButton.addActionListener(e -> {
             PaymentUI.openQuickAmendDialog(this, booking);
         });
 
-        // --- STEP 2: CANCEL MECHANISM ENFORCING DISTINCT CANCELLATION FEE LOGIC ---
         cancelButton.addActionListener(e -> {
 
             Date currentDate = new Date();
