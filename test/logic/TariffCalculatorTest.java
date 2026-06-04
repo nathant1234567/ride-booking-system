@@ -25,4 +25,31 @@ public class TariffCalculatorTest {
 
         assertEquals(76.50, estimate, 0.001);
     }
-}
+
+    @Test
+    public void testMinibusWeekday() {
+        // Minibus multiplier 2.0
+        // 10 miles * 2.5 * 2.0 = 50.0
+        // 16:00 (No discount)
+        double estimate = TariffCalculator.calculateEstimate("Minibus", 0, 10.0, "Monday", 16);
+        assertEquals(50.0, estimate, 0.001);
+    }
+
+    @Test
+    public void testStandardWeekendSurge() {
+        // Standard multiplier 1.0
+        // 10 miles * 2.5 = 25.0
+        // Saturday (Surge 1.2) -> 25 * 1.2 = 30.0
+        // 16:00 (No discount)
+        double estimate = TariffCalculator.calculateEstimate("Standard", 0, 10.0, "Saturday", 16);
+        assertEquals(30.0, estimate, 0.001);
+    }
+
+    @Test
+    public void testOffPeakDiscount() {
+        // 10 miles * 2.5 = 25.0
+        // 12:00 (Off-peak 0.8) -> 25 * 0.8 = 20.0
+        double estimate = TariffCalculator.calculateEstimate("Standard", 0, 10.0, "Monday", 12);
+        assertEquals(20.0, estimate, 0.001);
+    }
+    }

@@ -25,10 +25,8 @@ public class NotificationTest {
     public void setUp() {
         sentMessages.clear();
         BookingService.setNotificationService(mockNotificationService);
-        List<Booking> existing = BookingRepository.getBookings();
-        for (Booking b : existing) {
-            BookingRepository.removeBooking(b);
-        }
+        repository.BookingRepository.clear();
+        repository.TripRepository.clear();
     }
 
     @Test
@@ -46,9 +44,8 @@ public class NotificationTest {
     public void testAffectedUsersNotificationOnNewBooking() {
         User alice = new User("Alice", "alice@example.com", "pass");
         Date date = new Date();
-        // Alice has an existing booking
         Booking booking1 = new Booking(alice, "LHR", "Canterbury", 50, 1, date, date);
-        BookingRepository.addBooking(booking1);
+        BookingService.saveBooking(booking1);
         
         sentMessages.clear();
 
@@ -68,8 +65,8 @@ public class NotificationTest {
         Booking booking1 = new Booking(alice, "LHR", "Canterbury", 50, 1, date, date);
         Booking booking2 = new Booking(bob, "LHR", "Canterbury", 50, 1, date, date);
         
-        BookingRepository.addBooking(booking1);
-        BookingRepository.addBooking(booking2);
+        BookingService.saveBooking(booking1);
+        BookingService.saveBooking(booking2);
         
         sentMessages.clear();
 
@@ -89,8 +86,8 @@ public class NotificationTest {
         Booking booking1 = new Booking(alice, "LHR", "Canterbury", 50, 1, date, date);
         Booking booking2 = new Booking(bob, "LHR", "Canterbury", 50, 1, date, date);
         
-        BookingRepository.addBooking(booking1);
-        BookingRepository.addBooking(booking2);
+        BookingService.saveBooking(booking1);
+        BookingService.saveBooking(booking2);
         
         sentMessages.clear();
 
@@ -110,8 +107,6 @@ public class NotificationTest {
         Date date = new Date();
         Date time = new Date();
         
-        // Alice from Canterbury West, Bob from Canterbury East
-        // Both going to London on the same trip
         Booking booking1 = new Booking(alice, "London", "Canterbury West", 50, 1, date, time);
         BookingService.saveBooking(booking1);
         
