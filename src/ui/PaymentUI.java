@@ -173,7 +173,12 @@ public class PaymentUI extends JFrame {
         }
 
         // Calculate final total and write it cleanly to our text field
-        double totalDue = this.breakdown.getFinalTotal() + amendmentFee;
+        double totalDue;
+        if (originalBooking != null) {
+            totalDue = amendmentFee;
+        } else {
+            totalDue = this.breakdown.getFinalTotal() + amendmentFee;
+        }
         this.amountField.setText(String.format("%.2f", totalDue));
     }
 
@@ -211,12 +216,14 @@ public class PaymentUI extends JFrame {
                 // Build a clean string layout for our text receipt
                 StringBuilder sb = new StringBuilder();
                 sb.append("Payment Successful!\n");
-                sb.append(String.format("Base: £%.2f\n", this.breakdown.getBase()));
-                sb.append(String.format("Passengers fee: £%.2f\n", this.breakdown.getPassengerFee()));
-                sb.append(String.format("Luggage fee: £%.2f\n", this.breakdown.getLuggageFee()));
-                sb.append(String.format("Subtotal: £%.2f\n", this.breakdown.getSubtotal()));
-                if (this.breakdown.getDiscountAmount() > 0) {
-                    sb.append(String.format("Discounts (%s): -£%.2f\n", this.breakdown.getDiscountDescription(), this.breakdown.getDiscountAmount()));
+                if (originalBooking == null) {
+                    sb.append(String.format("Base: £%.2f\n", this.breakdown.getBase()));
+                    sb.append(String.format("Passengers fee: £%.2f\n", this.breakdown.getPassengerFee()));
+                    sb.append(String.format("Luggage fee: £%.2f\n", this.breakdown.getLuggageFee()));
+                    sb.append(String.format("Subtotal: £%.2f\n", this.breakdown.getSubtotal()));
+                    if (this.breakdown.getDiscountAmount() > 0) {
+                        sb.append(String.format("Discounts (%s): -£%.2f\n", this.breakdown.getDiscountDescription(), this.breakdown.getDiscountAmount()));
+                    }
                 }
                 if (amendmentFee > 0) {
                     sb.append(String.format("Amendment Fee: +£%.2f\n", amendmentFee));

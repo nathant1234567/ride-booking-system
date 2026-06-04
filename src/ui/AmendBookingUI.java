@@ -116,10 +116,9 @@ public class AmendBookingUI extends JPanel {
 
                 JOptionPane.showMessageDialog(this, String.format(
                         "Booking amendment validated!\n" +
-                                "New Base Price: £%.2f\n" +
                                 "Amendment Processing Fee: £%.2f\n" +
                                 "Redirecting to payment to finalize changes.",
-                        pb.getFinalTotal(), amendmentFee
+                        amendmentFee
                 ));
 
                 Window topWindow = SwingUtilities.getWindowAncestor(this);
