@@ -152,11 +152,24 @@ public class ManageBookingsUI extends JPanel {
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                BookingService.cancelBooking(booking);
-                bookingsPanel.remove(card);
-                bookingsPanel.revalidate();
-                bookingsPanel.repaint();
-                JOptionPane.showMessageDialog(this, "Booking cancelled successfully.");
+
+                Payment payment = new Payment();
+
+                PriceBreakdown breakdown = new PriceBreakdown(
+                        0.0,
+                        0.0,
+                        0.0,
+                        cancellationFee,
+                        0.0,
+                        0.0,
+                        cancellationFee,
+                        "Cancellation Fee"
+                );
+
+                PaymentUI paymentUI =
+                        new PaymentUI(payment, breakdown, booking, null);
+
+                paymentUI.setVisible(true);
             }
         });
 
