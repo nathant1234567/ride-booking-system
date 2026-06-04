@@ -151,8 +151,15 @@ public class PaymentUI extends JFrame {
      * Recalculates the trip costs and conditionally appends the amendment fee if changed
      */
     public void refreshDisplayAmount() {
-        // Grab the latest price breakdown details
-// Added vehicletype
+
+        // Don't recalculate cancellation payments
+        if ("Cancellation Fee".equals(this.breakdown.getDiscountDescription())) {
+            this.amountField.setText(
+                    String.format("%.2f", this.breakdown.getFinalTotal())
+            );
+            return;
+        }
+
         this.breakdown = BookingService.calculatePriceWithDiscount(
                 this.booking,
                 null,
