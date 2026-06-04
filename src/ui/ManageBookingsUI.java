@@ -1,11 +1,13 @@
 package ui;
 
 import model.Booking;
+import model.Payment;
+import model.PriceBreakdown;
 import repository.BookingRepository;
 
-// --- PACKAGES LOADED FOR EXTENDED WORKFLOW HANDLERS ---
+
 import service.BookingService;
-// -----------------------------------------------------------
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -41,7 +43,6 @@ public class ManageBookingsUI extends JPanel {
     }
 
     public ManageBookingsUI() {
-        // --- CAPTURE RUNTIME CONTEXT PULL ---
         activeInstance = this;
 
         setLayout(new BorderLayout());

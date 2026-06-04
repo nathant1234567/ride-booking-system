@@ -152,9 +152,12 @@ public class PaymentUI extends JFrame {
      */
     public void refreshDisplayAmount() {
         // Grab the latest price breakdown details
-        // Added vehicletype
-        this.breakdown = BookingService.calculatePriceWithDiscount(this.booking, null, this.vehicleType);
-
+// Added vehicletype
+        this.breakdown = BookingService.calculatePriceWithDiscount(
+                this.booking,
+                null,
+                this.vehicleType
+        );
 
         // If the user changed the date or time inside the form, apply the extra processing fee
         double amendmentFee = 0.0;
