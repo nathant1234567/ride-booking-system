@@ -243,6 +243,15 @@ public class PaymentUI extends JFrame {
 
                 outputArea.setText(sb.toString());
 
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Payment completed successfully.",
+                        "Payment Successful",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                this.dispose();
+
                 // Finalize the booking in the repository only after payment success
                 if ("Cancellation Fee".equals(this.breakdown.getDiscountDescription())) {
 
