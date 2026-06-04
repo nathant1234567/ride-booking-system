@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.Calendar;
 
 public class TripRepository {
+    /**
+     * Class to save trips.
+     */
     private static List<Trip> trips = new ArrayList<>();
 
     public static void addTrip(Trip trip) {

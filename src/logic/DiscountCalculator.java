@@ -1,8 +1,16 @@
 package logic;
 
+/**
+ * Class to calculate discounts based on the time of day.
+ */
 public class DiscountCalculator {
-    // This method took in the original price and the current hour and worked as the central hub for figuring
-    // out which time based discounts were active and applying them.
+    /**
+     * This method took in the original price and the current hour and worked as the central hub for figuring
+     *  out which time based discounts were active and applying them.
+     * @param basePrice
+     * @param timeOfDay
+     * @return
+     */
     public static double calculateDiscount(double basePrice, int timeOfDay) {
         double finalPrice = basePrice;
 

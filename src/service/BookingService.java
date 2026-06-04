@@ -143,6 +143,13 @@ public class BookingService {
         return calculatePriceWithDiscount(booking, promoCode, vType);
     }
 
+    /**
+     * Calculate price and apply discounts (promo)
+     * @param booking
+     * @param promoCode
+     * @param vehicleType
+     * @return
+     */
     public static PriceBreakdown calculatePriceWithDiscount(Booking booking, String promoCode, String vehicleType) {
         if (booking == null) return new PriceBreakdown(0,0,0,0,0,0,0, "");
 
@@ -236,9 +243,13 @@ public class BookingService {
         }
     }
 
-    // =========================================================================
-    // --- METHOD: TRIP ACCOMMODATION AND DURATION RECALCULATION CHECK ---
-    // =========================================================================
+    /**
+     * Check if the trip accommodation is available for the new booking date and time
+     * @param targetBooking
+     * @param newDate
+     * @param newTime
+     * @return
+     */
     public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
         Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
                 targetBooking.getDestination(), newDate, newTime, targetBooking.getVehicleType()
@@ -258,6 +269,12 @@ public class BookingService {
         return true;
     }
 
+    /**
+     * Check if two dates are on the same day
+     * @param d1
+     * @param d2
+     * @return
+     */
     private static boolean isSameDay(Date d1, Date d2) {
         if (d1 == null || d2 == null) return false;
         Calendar cal1 = Calendar.getInstance();
@@ -267,10 +284,6 @@ public class BookingService {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
-
-    // =========================================================================
-    // --- NEW METHODS: AMENDMENT AND CANCELLATION FEE CALCULATIONS ---
-    // =========================================================================
 
     /**
      * Calculates a separate flat handling fee specifically for modifying an existing trip slot.

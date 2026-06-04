@@ -5,11 +5,11 @@ import model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Class to save users.
- */
-public class UserRepository {
 
+public class UserRepository {
+    /**
+     * Class to save users.
+     */
     private static List<User> users = new ArrayList<>();
 
     static {

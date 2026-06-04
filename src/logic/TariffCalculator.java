@@ -1,8 +1,17 @@
 package logic;
 
+
 public class TariffCalculator {
 
-    // This method took in the 5 customer factors and worked out a dynamic price estimate before the booking was finalised.
+    /**
+     * This method took in the 5 customer factors and worked out a dynamic price estimate before the booking was finalised.
+     * @param vehicleType
+     * @param luggageCount
+     * @param distance
+     * @param dayOfWeek
+     * @param timeOfDay
+     * @return
+     */
     public static double calculateEstimate(String vehicleType, int luggageCount, double distance, String dayOfWeek, int timeOfDay) {
 
         // Worked out the base fare first using £2.50 per mile and added a flat £2.00 fee per bag.
