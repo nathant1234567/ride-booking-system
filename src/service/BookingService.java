@@ -2,11 +2,14 @@ package service;
 
 import model.Booking;
 import model.PriceBreakdown;
+import model.Trip;
 import repository.BookingRepository;
+import repository.TripRepository;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.*;
 
 public class BookingService {
     /**
@@ -22,6 +25,7 @@ public class BookingService {
     }
 
     public static void saveBooking(Booking booking) {
+        assignToTrip(booking);
         BookingRepository.addBooking(booking);
         notificationService.sendNotification(booking, "Booking confirmation: Your booking has been successfully created.");
 
@@ -29,10 +33,36 @@ public class BookingService {
         notifyAffectedUsers(booking, "A new passenger has joined your trip. Trip duration may have changed.");
     }
 
+    public static void assignToTrip(Booking booking) {
+        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
+                booking.getDestination(), booking.getDate(), booking.getTime()
+        );
+        boolean addedToTrip = false;
+        if (matchingTrip.isPresent()) {
+            Trip existingTrip = matchingTrip.get();
+            addedToTrip = existingTrip.addBooking(booking);
+            if (addedToTrip) {
+                booking.setTrip(existingTrip);
+            }
+        }
+        if (!addedToTrip) {
+            String newTripID = "TRP-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), "Standard");
+            newTrip.addBooking(booking);
+            booking.setTrip(newTrip);
+            TripRepository.addTrip(newTrip);
+        }
+    }
+
+
+
     /**
      * Cancels a booking and notifies the user and any affected trip-mates.
      */
     public static void cancelBooking(Booking booking) {
+        if (booking.getTrip() != null) {
+            booking.getTrip().removeBooking(booking);
+        }
         BookingRepository.removeBooking(booking);
         notificationService.sendNotification(booking, "Cancellation confirmation: Your booking has been cancelled.");
 
@@ -44,6 +74,14 @@ public class BookingService {
      * Updates a booking and notifies the user and any affected trip-mates.
      */
     public static void updateBooking(Booking original, Booking updated) {
+        // Remove from old trip if it exists
+        if (original.getTrip() != null) {
+            original.getTrip().removeBooking(original);
+        }
+
+        // Re-assign to a trip based on the updated details
+        assignToTrip(updated);
+
         boolean success = BookingRepository.updateBooking(original, updated);
         if (success) {
             notificationService.sendNotification(updated, "Amendment confirmation: Your booking has been successfully updated.");
@@ -251,6 +289,7 @@ public class BookingService {
 
         return true; // Accommodated and successfully updated duration fields
     }
+
 
     private static boolean isSameDay(Date d1, Date d2) {
         if (d1 == null || d2 == null) return false;

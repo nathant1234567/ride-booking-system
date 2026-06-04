@@ -32,4 +32,8 @@ public class BookingRepository {
         }
         return false;
     }
+
+    public static void clear() {
+        bookings.clear();
+    }
 }

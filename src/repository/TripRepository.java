@@ -14,13 +14,17 @@ public class TripRepository {
         trips.add(trip);
     }
 
+    public static void clear() {
+        trips.clear();
+    }
+
     public static List<Trip> getTrips() {
         return new ArrayList<>(trips);
     }
 
     public static Optional<Trip> findMatchingTrip(String destination, Date date, Date time) {
         return trips.stream()
-                .filter(t -> t.getDestination().equals(destination))
+                .filter(t -> t.getDestination().equalsIgnoreCase(destination))
                 .filter(t -> isSameDay(t.getDate(), date))
                 .filter(t -> isCloseTime(t.getTime(), time))
                 .findFirst();
@@ -36,8 +40,14 @@ public class TripRepository {
     }
 
     private static boolean isCloseTime(Date t1, Date t2) {
-        // Within 30 minutes of each other
-        long diff = Math.abs(t1.getTime() - t2.getTime());
-        return diff <= 30 * 60 * 1000;
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(t1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(t2);
+
+        int m1 = cal1.get(Calendar.HOUR_OF_DAY) * 60 + cal1.get(Calendar.MINUTE);
+        int m2 = cal2.get(Calendar.HOUR_OF_DAY) * 60 + cal2.get(Calendar.MINUTE);
+
+        return Math.abs(m1 - m2) <= 30;
     }
 }
