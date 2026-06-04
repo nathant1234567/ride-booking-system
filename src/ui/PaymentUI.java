@@ -220,7 +220,12 @@ public class PaymentUI extends JFrame {
                 outputArea.setText(sb.toString());
 
                 // Finalize the booking in the repository only after payment success
-                if (originalBooking != null) {
+                if ("Cancellation Fee".equals(this.breakdown.getDiscountDescription())) {
+
+                    BookingService.cancelBooking(this.booking);
+
+                } else if (originalBooking != null) {
+
                     BookingService.updateBooking(originalBooking, this.booking);
                 } else {
                     BookingService.saveBooking(this.booking);
