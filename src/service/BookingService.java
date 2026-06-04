@@ -11,7 +11,7 @@ import java.util.List;
 public class BookingService {
     /**
      * Class to handle the logic to create bookings.
-     * It includes booking creation, cancellation and trip management functions.
+     * It includes booking creation, cancellation and trip management functions. 
      * @param booking
      */
 
