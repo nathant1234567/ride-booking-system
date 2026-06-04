@@ -79,8 +79,15 @@ public class PaymentUI extends JFrame {
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
 
-        // Setup the apply discount button from Maryjane's feature merge
+
+        // Set up the apply discount button from Maryjane's feature merge
         JButton discountButton = new JButton("Apply Discount");
+
+        // Disabled discounts on amendment fees
+        if (originalBooking != null) {
+            discountButton.setEnabled(false);
+        }
+
         add(discountButton);
 
         // Explicit traditional listener definition blocks to completely bypass lambda type-checking bugs
