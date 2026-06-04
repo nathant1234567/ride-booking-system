@@ -27,20 +27,26 @@ public class PaymentUI extends JFrame {
     private Booking originalBooking;
 
     // Fixed primitive types to ensure secure millisecond timestamp validation
+    // Fixed this to update the pay -
     private long originalDateMs;
     private long originalTimeMs;
+    private String vehicleType;
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking) {
+        this(payment, breakdown, booking, originalBooking, "Standard");
+    }
+
+    public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking, String vehicleType) {
         this.payment = payment;
         this.breakdown = breakdown;
         this.booking = booking;
         this.originalBooking = originalBooking;
+        this.vehicleType = vehicleType;
 
         // Freeze the window size so it doesn't stretch or break the layout
         setResizable(false);
 
         // Cache exact historical primitives safely to prevent pointer mutations
-        // If we have an original booking (amendment), use its date/time for comparison
         Booking reference = (originalBooking != null) ? originalBooking : booking;
         this.originalDateMs = reference.getDate() != null ? reference.getDate().getTime() : 0L;
         this.originalTimeMs = reference.getTime() != null ? reference.getTime().getTime() : 0L;
@@ -146,7 +152,9 @@ public class PaymentUI extends JFrame {
      */
     public void refreshDisplayAmount() {
         // Grab the latest price breakdown details
-        this.breakdown = BookingService.calculatePriceWithDiscount(this.booking, null);
+        // Added vehicletype
+        this.breakdown = BookingService.calculatePriceWithDiscount(this.booking, null, this.vehicleType);
+
 
         // If the user changed the date or time inside the form, apply the extra processing fee
         double amendmentFee = 0.0;

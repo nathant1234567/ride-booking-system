@@ -5,18 +5,18 @@ import static org.junit.Assert.assertEquals;
 
 public class DiscountCalculatorTest {
 
-    // I fed the calculator a base price of 100 and a time of 12(noon) to verify the daytime discount logic
+    // Fed the calculator a base price of 100 and a time of 12(noon) to verify the daytime discount logic
     // caught the hour within the 10:00 to 15:00 window and correctly brought the price down to 80.
 
     @Test
     public void testOffPeakDiscount() {
         double result = DiscountCalculator.calculateDiscount(100.0, 12);
-        // For this I used 0.001 as the delta to allow a tiny margin of error so Java floating point
+        // For this it uses 0.001 as the delta to allow a tiny margin of error so Java floating point
         // rounding did not cause the test to falsely fail.
         assertEquals(80.0, result, 0.001);
     }
 
-    // I then passed in 23 (11:00 PM) to validate the cross midnight logic and confirm that the OR condition
+    // Then passed in 23 (11:00 PM) to validate the cross midnight logic and confirm that the OR condition
     // in the DiscountCalculator file was triggered correctly bringing a 100 ticket down to 85
     @Test
     public void testLateNightDiscount() {

@@ -43,6 +43,13 @@ public class BookingUI extends JPanel {
         JComboBox<String> destinationComboBox = new JComboBox<>(destinations);
         inputPanel.add(destinationComboBox);
 
+        // --- I added NEW VEHICLE TYPE DROPDOWN --- mj
+        inputPanel.add(new JLabel("Vehicle Type:"));
+        String[] vehicles = {"Standard", "Executive", "Minibus"};
+        JComboBox<String> vehicleComboBox = new JComboBox<>(vehicles);
+        inputPanel.add(vehicleComboBox);
+        // ---------------------------------
+
         // Pickup
         inputPanel.add(new JLabel("Pickup Location:"));
         JTextField pickupField = new JTextField();
@@ -154,15 +161,33 @@ public class BookingUI extends JPanel {
 
             Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time);
             // calculate price (with potential default discounts) and open payment screen with the breakdown
-            PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null);
+            // I added / fix this for the vehicle drop down - mj
+            String selectedVehicle = (String) vehicleComboBox.getSelectedItem();
+            PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null, selectedVehicle);
             JOptionPane.showMessageDialog(this, String.format("Estimated price: £%.2f - Loading payment screen...", breakdown.getFinalTotal()));
 
+            // I added it to Open payment screen with the breakdown and the selected vehicle type - mj
             Payment payment = new Payment();
-            PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking, null);
+            PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking, null, selectedVehicle);
             paymentUI.setVisible(true);
         });
 
+
         add(inputPanel, BorderLayout.CENTER);
-        add(saveButton, BorderLayout.SOUTH);
+
+        // I added the Browse tariffs button here-mj
+
+        JButton browseTariffsButton = new JButton("Browse Tariffs & Estimates");
+        browseTariffsButton.addActionListener(e -> TariffUI.launch());
+
+        // Created a mini-panel to stack both buttons neatly at the bottom
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
+        buttonPanel.add(browseTariffsButton);
+        buttonPanel.add(saveButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 }
+
+
+

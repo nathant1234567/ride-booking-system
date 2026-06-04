@@ -11,7 +11,7 @@ public class DiscountCalculator {
         if (timeOfDay >= 10 && timeOfDay <= 15) {
             finalPrice = basePrice * 0.80;
         }
-        // I used the OR operator here because the late night window crossed over midnight so if either hour
+        // Used the OR operator here because the late night window crossed over midnight so if either hour
         // condition was met it applied a 15% discount by multiplying the price by 0.85
         else if (timeOfDay >= 22 || timeOfDay <= 5) {
             finalPrice = basePrice * 0.85;
