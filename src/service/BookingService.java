@@ -92,16 +92,14 @@ public class BookingService {
     }
 
     /**
-     * Identifies and notifies other users on the same trip route and date.
+     * Identifies and notifies other users on the same trip.
      */
     private static void notifyAffectedUsers(Booking triggerBooking, String message) {
-        List<Booking> allBookings = BookingRepository.getBookings();
-        for (Booking other : allBookings) {
-            if (!other.equals(triggerBooking) &&
-                    other.getDestination().equalsIgnoreCase(triggerBooking.getDestination()) &&
-                    other.getPickupLocation().equalsIgnoreCase(triggerBooking.getPickupLocation()) &&
-                    isSameDay(other.getDate(), triggerBooking.getDate())) {
+        Trip trip = triggerBooking.getTrip();
+        if (trip == null) return;
 
+        for (Booking other : trip.getBookings()) {
+            if (!other.equals(triggerBooking)) {
                 notificationService.sendNotification(other, message);
             }
         }

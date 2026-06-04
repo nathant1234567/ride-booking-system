@@ -102,4 +102,25 @@ public class NotificationTest {
         assertTrue("Bob should receive an amendment confirmation",
             sentMessages.contains("bob@example.com: Amendment confirmation: Your booking has been successfully updated."));
     }
+
+    @Test
+    public void testNotificationWithDifferentPickupsOnSameTrip() {
+        User alice = new User("Alice", "alice@example.com", "pass");
+        User bob = new User("Bob", "bob@example.com", "pass");
+        Date date = new Date();
+        Date time = new Date();
+        
+        // Alice from Canterbury West, Bob from Canterbury East
+        // Both going to London on the same trip
+        Booking booking1 = new Booking(alice, "London", "Canterbury West", 50, 1, date, time);
+        BookingService.saveBooking(booking1);
+        
+        sentMessages.clear();
+
+        Booking booking2 = new Booking(bob, "London", "Canterbury East", 50, 1, date, time);
+        BookingService.saveBooking(booking2);
+
+        assertTrue("Alice should be notified even though Bob has a different pickup location",
+            sentMessages.contains("alice@example.com: A new passenger has joined your trip. Trip duration may have changed."));
+    }
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 public class TripTest {
 
     @Test
-    public void testTripCreation() { 
+    public void testTripCreation() {
         Date now = new Date();
         Trip trip = new Trip("trip-123", "Central London", now, now, "Standard");
 
