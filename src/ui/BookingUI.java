@@ -141,6 +141,7 @@ public class BookingUI extends JPanel {
             int luggage = (int) luggageSpinner.getValue();
             Date date = (Date) dateSpinner.getValue();
             Date time = (Date) timeSpinner.getValue();
+            String selectedVehicle = (String) vehicleComboBox.getSelectedItem();
 
             if (pickupLocation.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a pickup location.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -159,10 +160,9 @@ public class BookingUI extends JPanel {
                 return;
             }
 
-            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time);
+            Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time, selectedVehicle);
             // calculate price (with potential default discounts) and open payment screen with the breakdown
             // Added / fix this for the vehicle drop down
-            String selectedVehicle = (String) vehicleComboBox.getSelectedItem();
             PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null, selectedVehicle);
             JOptionPane.showMessageDialog(this, String.format("Estimated price: £%.2f - Loading payment screen...", breakdown.getFinalTotal()));
 

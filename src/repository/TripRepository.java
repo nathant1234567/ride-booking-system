@@ -22,9 +22,10 @@ public class TripRepository {
         return new ArrayList<>(trips);
     }
 
-    public static Optional<Trip> findMatchingTrip(String destination, Date date, Date time) {
+    public static Optional<Trip> findMatchingTrip(String destination, Date date, Date time, String vehicleType) {
         return trips.stream()
                 .filter(t -> t.getDestination().equalsIgnoreCase(destination))
+                .filter(t -> t.getVehicleType().equalsIgnoreCase(vehicleType))
                 .filter(t -> isSameDay(t.getDate(), date))
                 .filter(t -> isCloseTime(t.getTime(), time))
                 .findFirst();

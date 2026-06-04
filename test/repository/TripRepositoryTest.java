@@ -34,7 +34,7 @@ public class TripRepositoryTest {
         Trip trip = new Trip("T1", "London", now, now, "Standard");
         TripRepository.addTrip(trip);
         
-        Optional<Trip> result = TripRepository.findMatchingTrip("London", now, now);
+        Optional<Trip> result = TripRepository.findMatchingTrip("London", now, now, "Standard");
         assertTrue(result.isPresent());
         assertEquals(trip, result.get());
     }
@@ -51,7 +51,7 @@ public class TripRepositoryTest {
         TripRepository.addTrip(trip);
         
         // Search with exact date
-        Optional<Trip> result = TripRepository.findMatchingTrip("London", date, date);
+        Optional<Trip> result = TripRepository.findMatchingTrip("London", date, date, "Standard");
         assertTrue("Should find trip within 30 min window", result.isPresent());
     }
 
@@ -66,7 +66,7 @@ public class TripRepositoryTest {
         Trip trip = new Trip("T1", "London", date, time1, "Standard");
         TripRepository.addTrip(trip);
         
-        Optional<Trip> result = TripRepository.findMatchingTrip("London", date, date);
+        Optional<Trip> result = TripRepository.findMatchingTrip("London", date, date, "Standard");
         assertFalse("Should not find trip outside 30 min window", result.isPresent());
     }
 
@@ -76,7 +76,17 @@ public class TripRepositoryTest {
         Trip trip = new Trip("T1", "London", now, now, "Standard");
         TripRepository.addTrip(trip);
         
-        Optional<Trip> result = TripRepository.findMatchingTrip("Paris", now, now);
+        Optional<Trip> result = TripRepository.findMatchingTrip("Paris", now, now, "Standard");
         assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void testFindMatchingTripDifferentVehicleType() {
+        Date now = new Date();
+        Trip trip = new Trip("T1", "London", now, now, "Standard");
+        TripRepository.addTrip(trip);
+
+        Optional<Trip> result = TripRepository.findMatchingTrip("London", now, now, "Minibus");
+        assertFalse("Should not find trip with different vehicle type", result.isPresent());
     }
 }

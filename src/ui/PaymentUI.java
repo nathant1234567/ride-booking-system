@@ -33,7 +33,7 @@ public class PaymentUI extends JFrame {
     private String vehicleType;
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking) {
-        this(payment, breakdown, booking, originalBooking, "Standard");
+        this(payment, breakdown, booking, originalBooking, booking.getVehicleType());
     }
 
     public PaymentUI(Payment payment, PriceBreakdown breakdown, Booking booking, Booking originalBooking, String vehicleType) {
@@ -42,6 +42,9 @@ public class PaymentUI extends JFrame {
         this.booking = booking;
         this.originalBooking = originalBooking;
         this.vehicleType = vehicleType;
+        if (this.booking.getVehicleType() == null || this.booking.getVehicleType().equals("Standard")) {
+             this.booking.setVehicleType(vehicleType);
+        }
 
         // Freeze the window size so it doesn't stretch or break the layout
         setResizable(false);

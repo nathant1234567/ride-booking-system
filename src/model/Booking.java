@@ -15,9 +15,10 @@ public class Booking {
     private int numberOfLuggage;
     private Date date;
     private Date time;
+    private String vehicleType;
     private Trip trip;
 
-    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time) {
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time, String vehicleType) {
         this.user = user;
         this.destination = destination;
         this.pickupLocation = pickupLocation;
@@ -26,11 +27,16 @@ public class Booking {
         this.numberOfLuggage = numberOfLuggage;
         this.date = date;
         this.time = time;
+        this.vehicleType = vehicleType;
     }
 
-    // Backwards-compatible constructor (no luggage specified)
+    // Backwards-compatible constructors
+    public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time) {
+        this(user, destination, pickupLocation, lengthEstimate, numberOfPassengers, numberOfLuggage, date, time, "Standard");
+    }
+
     public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, Date date, Date time) {
-        this(user, destination, pickupLocation, lengthEstimate, numberOfPassengers, 0, date, time);
+        this(user, destination, pickupLocation, lengthEstimate, numberOfPassengers, 0, date, time, "Standard");
     }
 
     public User getUser() { return user; }
@@ -56,6 +62,9 @@ public class Booking {
 
     public Date getTime() { return time; }
     public void setTime(Date time) { this.time = time; }
+
+    public String getVehicleType() { return vehicleType; }
+    public void setVehicleType(String vehicleType) { this.vehicleType = vehicleType; }
 
     public Trip getTrip() { return trip; }
     public void setTrip(Trip trip) { this.trip = trip; }

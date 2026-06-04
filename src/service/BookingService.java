@@ -35,7 +35,7 @@ public class BookingService {
 
     public static void assignToTrip(Booking booking) {
         Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
-                booking.getDestination(), booking.getDate(), booking.getTime()
+                booking.getDestination(), booking.getDate(), booking.getTime(), booking.getVehicleType()
         );
         boolean addedToTrip = false;
         if (matchingTrip.isPresent()) {
@@ -47,7 +47,7 @@ public class BookingService {
         }
         if (!addedToTrip) {
             String newTripID = "TRP-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
-            Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), "Standard");
+            Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), booking.getVehicleType());
             newTrip.addBooking(booking);
             booking.setTrip(newTrip);
             TripRepository.addTrip(newTrip);
@@ -139,7 +139,8 @@ public class BookingService {
 
     // Added / fixed the price to calculate like the estimate browse tariff
     public static PriceBreakdown calculatePriceWithDiscount(Booking booking, String promoCode) {
-        return calculatePriceWithDiscount(booking, promoCode, "Standard");
+        String vType = (booking != null && booking.getVehicleType() != null) ? booking.getVehicleType() : "Standard";
+        return calculatePriceWithDiscount(booking, promoCode, vType);
     }
 
     public static PriceBreakdown calculatePriceWithDiscount(Booking booking, String promoCode, String vehicleType) {
@@ -240,7 +241,7 @@ public class BookingService {
     // =========================================================================
     public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
         Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
-                targetBooking.getDestination(), newDate, newTime
+                targetBooking.getDestination(), newDate, newTime, targetBooking.getVehicleType()
         );
 
         if (matchingTrip.isPresent()) {

@@ -89,7 +89,7 @@ public class AmendBookingUI extends JPanel {
                 Booking bookingClone = new Booking(
                         original.getUser(), original.getDestination(), original.getPickupLocation(),
                         original.getLengthEstimate(), original.getNumberOfPassengers(), original.getNumberOfLuggage(),
-                        original.getDate(), original.getTime()
+                        original.getDate(), original.getTime(), original.getVehicleType()
                 );
 
                 boolean canAccommodate = BookingService.checkTripAccommodation(bookingClone, chosenDate, chosenTime);
@@ -108,10 +108,11 @@ public class AmendBookingUI extends JPanel {
                         original.getNumberOfPassengers(),
                         original.getNumberOfLuggage(),
                         chosenDate,
-                        chosenTime
+                        chosenTime,
+                        original.getVehicleType()
                 );
 
-                PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null);
+                PriceBreakdown pb = BookingService.calculatePriceWithDiscount(updated, null, original.getVehicleType());
                 double amendmentFee = BookingService.calculateAmendmentFee(updated);
 
                 JOptionPane.showMessageDialog(this, String.format(
