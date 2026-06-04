@@ -1,16 +1,15 @@
 package model;
 
-// --- REMOVE JUPITER PACKAGES AND ADD JUNIT 4 IMPORTS ---
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 // ------------------------------------------------------
 
 import java.util.Date;
 
-public class TripTest { // Class must be public in JUnit 4
+public class TripTest {
 
     @Test
-    public void testTripCreation() { // Must be public void
+    public void testTripCreation() { 
         Date now = new Date();
         Trip trip = new Trip("trip-123", "Central London", now, now, "Standard");
 
@@ -22,7 +21,7 @@ public class TripTest { // Class must be public in JUnit 4
     }
 
     @Test
-    public void testAddAndRemoveBooking() { // Must be public void
+    public void testAddAndRemoveBooking() {
         Date now = new Date();
         Trip trip = new Trip("trip-123", "Central London", now, now, "Standard");
         User user = new User("Test", "test@test.com", "123");
