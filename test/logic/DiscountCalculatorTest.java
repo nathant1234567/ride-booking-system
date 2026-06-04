@@ -1,6 +1,5 @@
 package logic;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,4 +31,6 @@ public class DiscountCalculatorTest {
         double result = DiscountCalculator.calculateDiscount(100.0, 8);
         assertEquals(100.0, result, 0.001);
     }
+
+
 }

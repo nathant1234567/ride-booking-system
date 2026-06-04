@@ -241,55 +241,23 @@ public class BookingService {
     // --- METHOD: TRIP ACCOMMODATION AND DURATION RECALCULATION CHECK ---
     // =========================================================================
     public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
-        List<Booking> allBookings = BookingRepository.getBookings();
+        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
+                targetBooking.getDestination(), newDate, newTime
+        );
 
-        // 1. CAPACITY CONSTRAINT CHECK
-        int passengerCountOnThisTrip = targetBooking.getNumberOfPassengers();
+        if (matchingTrip.isPresent()) {
+            Trip trip = matchingTrip.get();
+            int currentPassengers = trip.getPassengerCount();
 
-        for (Booking other : allBookings) {
-            // Skip the booking itself
-            if (other.equals(targetBooking)) continue;
-
-            // Check if another user is on the exact same trip route (Destination & Pickup match)
-            if (other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
-                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation())) {
-
-                // Check if they overlap on the same date
-                if (isSameDay(other.getDate(), newDate)) {
-                    passengerCountOnThisTrip += other.getNumberOfPassengers();
-
-                    // Business Rule Example: Total passengers on a shared trip cannot exceed 8
-                    if (passengerCountOnThisTrip > 8) {
-                        return false; // Cannot accommodate the change
-                    }
-                }
+            if (trip.getBookings().contains(targetBooking)) {
+                currentPassengers -= targetBooking.getNumberOfPassengers();
+            }
+            if (currentPassengers + targetBooking.getNumberOfPassengers() > trip.getMaxCapacity()) {
+                return false;
             }
         }
-
-        // 2. DURATION RECALCULATION FOR ALL AFFECTED USERS
-        // Temporarily apply the new time variables to the target booking to recalculate its duration
-        targetBooking.setTime(newTime);
-        targetBooking.setDate(newDate);
-        int newTargetDuration = bookingLengthCalculator(targetBooking, targetBooking.getNumberOfLuggage());
-        targetBooking.setLengthEstimate(newTargetDuration);
-
-        // Recalculate duration for any other users riding along on this newly selected trip configuration
-        for (Booking other : allBookings) {
-            if (!other.equals(targetBooking) &&
-                    other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
-                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation()) &&
-                    isSameDay(other.getDate(), newDate)) {
-
-                // Synchronize their time window to match the updated route group schedule
-                other.setTime(newTime);
-                int updatedOtherDuration = bookingLengthCalculator(other, other.getNumberOfLuggage());
-                other.setLengthEstimate(updatedOtherDuration);
-            }
-        }
-
-        return true; // Accommodated and successfully updated duration fields
+        return true;
     }
-
 
     private static boolean isSameDay(Date d1, Date d2) {
         if (d1 == null || d2 == null) return false;
