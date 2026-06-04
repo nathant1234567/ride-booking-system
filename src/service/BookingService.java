@@ -2,16 +2,16 @@ package service;
 
 import model.Booking;
 import model.PriceBreakdown;
-import model.Trip;
 import repository.BookingRepository;
-import repository.TripRepository;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class BookingService {
     /**
      * Class to handle the logic to create bookings.
-     * It includes booking creation, cancellation and trip management functions. 
+     * It includes booking creation, cancellation and trip management functions.
      * @param booking
      */
 
@@ -22,33 +22,11 @@ public class BookingService {
     }
 
     public static void saveBooking(Booking booking) {
-        assignToTrip(booking);
         BookingRepository.addBooking(booking);
         notificationService.sendNotification(booking, "Booking confirmation: Your booking has been successfully created.");
 
         // Notify others if they are on the same trip
         notifyAffectedUsers(booking, "A new passenger has joined your trip. Trip duration may have changed.");
-    }
-
-    public static void assignToTrip(Booking booking) {
-        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
-                booking.getDestination(), booking.getDate(), booking.getTime()
-        );
-        boolean addedToTrip = false;
-        if (matchingTrip.isPresent()) {
-            Trip existingTrip = matchingTrip.get();
-            addedToTrip = existingTrip.addBooking(booking);
-            if (addedToTrip) {
-                booking.setTrip(existingTrip);
-            }
-        }
-        if (!addedToTrip) {
-            String newTripID = "TRP-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
-            Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), "Standard");
-            newTrip.addBooking(booking);
-            booking.setTrip(newTrip);
-            TripRepository.addTrip(newTrip);
-        }
     }
 
     /**
@@ -122,35 +100,45 @@ public class BookingService {
      * Returns a PriceBreakdown containing subtotal, discounts and final total.
      * Promo codes supported: "SAVE10" -> 10% off.
      */
+
+    // Added / fixed the price to calculate like the estimate browse tariff
     public static PriceBreakdown calculatePriceWithDiscount(Booking booking, String promoCode) {
+        return calculatePriceWithDiscount(booking, promoCode, "Standard");
+    }
+
+    public static PriceBreakdown calculatePriceWithDiscount(Booking booking, String promoCode, String vehicleType) {
         if (booking == null) return new PriceBreakdown(0,0,0,0,0,0,0, "");
 
-        double basePerKm = 1.5;
-        double passengerFeePerPerson = 2.0;
-        double luggageFeePerItem = 1.5;
+        double distanceInMiles = booking.getLengthEstimate() * 0.621371;
 
-        double base = basePerKm * booking.getLengthEstimate();
-        double passengerFee = passengerFeePerPerson * booking.getNumberOfPassengers();
-        double luggageFee = luggageFeePerItem * booking.getNumberOfLuggage();
-        double subtotal = base + passengerFee + luggageFee;
-        if (subtotal < 5.0) subtotal = 5.0;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(booking.getTime());
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+        cal.setTime(booking.getDate());
+        int dayInt = cal.get(Calendar.DAY_OF_WEEK);
+        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String dayOfWeek = days[dayInt - 1];
+
+        double subtotal = logic.TariffCalculator.calculateEstimate(vehicleType, booking.getNumberOfLuggage(), distanceInMiles, dayOfWeek, hour);
+
+        double base = subtotal;
+        double passengerFee = 0;
+        double luggageFee = booking.getNumberOfLuggage() * 2.00;
 
         double totalDiscountPercent = 0.0;
         StringBuilder desc = new StringBuilder();
 
-        // Loyalty discount: users with kent.ac.uk email get 5%
         if (booking.getUser() != null && booking.getUser().getEmail() != null && booking.getUser().getEmail().endsWith("@kent.ac.uk")) {
             totalDiscountPercent += 0.05;
             desc.append("Loyalty 5% ");
         }
 
-        // Group discount for >=5 passengers
         if (booking.getNumberOfPassengers() >= 5) {
             totalDiscountPercent += 0.10;
             desc.append("Group 10% ");
         }
 
-        // Promo codes
         if (promoCode != null) {
             String pc = promoCode.trim().toUpperCase();
             if (pc.equals("SAVE10")) {
@@ -215,22 +203,53 @@ public class BookingService {
     // --- METHOD: TRIP ACCOMMODATION AND DURATION RECALCULATION CHECK ---
     // =========================================================================
     public static boolean checkTripAccommodation(Booking targetBooking, Date newDate, Date newTime) {
-        Optional<Trip> matchingTrip = TripRepository.findMatchingTrip(
-                targetBooking.getDestination(), newDate, newTime
-        );
+        List<Booking> allBookings = BookingRepository.getBookings();
 
-        if (matchingTrip.isPresent()) {
-            Trip trip = matchingTrip.get();
-            int currentPassengers = trip.getPassengerCount();
+        // 1. CAPACITY CONSTRAINT CHECK
+        int passengerCountOnThisTrip = targetBooking.getNumberOfPassengers();
 
-            if (trip.getBookings().contains(targetBooking)) {
-                currentPassengers -= targetBooking.getNumberOfPassengers();
-            }
-            if (currentPassengers + targetBooking.getNumberOfPassengers() > trip.getMaxCapacity()) {
-                return false;
+        for (Booking other : allBookings) {
+            // Skip the booking itself
+            if (other.equals(targetBooking)) continue;
+
+            // Check if another user is on the exact same trip route (Destination & Pickup match)
+            if (other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
+                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation())) {
+
+                // Check if they overlap on the same date
+                if (isSameDay(other.getDate(), newDate)) {
+                    passengerCountOnThisTrip += other.getNumberOfPassengers();
+
+                    // Business Rule Example: Total passengers on a shared trip cannot exceed 8
+                    if (passengerCountOnThisTrip > 8) {
+                        return false; // Cannot accommodate the change
+                    }
+                }
             }
         }
-        return true;
+
+        // 2. DURATION RECALCULATION FOR ALL AFFECTED USERS
+        // Temporarily apply the new time variables to the target booking to recalculate its duration
+        targetBooking.setTime(newTime);
+        targetBooking.setDate(newDate);
+        int newTargetDuration = bookingLengthCalculator(targetBooking, targetBooking.getNumberOfLuggage());
+        targetBooking.setLengthEstimate(newTargetDuration);
+
+        // Recalculate duration for any other users riding along on this newly selected trip configuration
+        for (Booking other : allBookings) {
+            if (!other.equals(targetBooking) &&
+                    other.getDestination().equalsIgnoreCase(targetBooking.getDestination()) &&
+                    other.getPickupLocation().equalsIgnoreCase(targetBooking.getPickupLocation()) &&
+                    isSameDay(other.getDate(), newDate)) {
+
+                // Synchronize their time window to match the updated route group schedule
+                other.setTime(newTime);
+                int updatedOtherDuration = bookingLengthCalculator(other, other.getNumberOfLuggage());
+                other.setLengthEstimate(updatedOtherDuration);
+            }
+        }
+
+        return true; // Accommodated and successfully updated duration fields
     }
 
     private static boolean isSameDay(Date d1, Date d2) {
