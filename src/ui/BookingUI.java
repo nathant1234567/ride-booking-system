@@ -43,7 +43,7 @@ public class BookingUI extends JPanel {
         JComboBox<String> destinationComboBox = new JComboBox<>(destinations);
         inputPanel.add(destinationComboBox);
 
-        // --- I added NEW VEHICLE TYPE DROPDOWN --- mj
+        // Added NEW VEHICLE TYPE DROPDOWN
         inputPanel.add(new JLabel("Vehicle Type:"));
         String[] vehicles = {"Standard", "Executive", "Minibus"};
         JComboBox<String> vehicleComboBox = new JComboBox<>(vehicles);
@@ -161,12 +161,12 @@ public class BookingUI extends JPanel {
 
             Booking booking = new Booking(user, destination, pickupLocation, lengthEstimate, passengers, luggage, date, time);
             // calculate price (with potential default discounts) and open payment screen with the breakdown
-            // I added / fix this for the vehicle drop down - mj
+            // Added / fix this for the vehicle drop down
             String selectedVehicle = (String) vehicleComboBox.getSelectedItem();
             PriceBreakdown breakdown = BookingService.calculatePriceWithDiscount(booking, null, selectedVehicle);
             JOptionPane.showMessageDialog(this, String.format("Estimated price: £%.2f - Loading payment screen...", breakdown.getFinalTotal()));
 
-            // I added it to Open payment screen with the breakdown and the selected vehicle type - mj
+            // Added it to Open payment screen with the breakdown and the selected vehicle type
             Payment payment = new Payment();
             PaymentUI paymentUI = new PaymentUI(payment, breakdown, booking, null, selectedVehicle);
             paymentUI.setVisible(true);
@@ -175,7 +175,7 @@ public class BookingUI extends JPanel {
 
         add(inputPanel, BorderLayout.CENTER);
 
-        // I added the Browse tariffs button here-mj
+        // Added the Browse tariffs button
 
         JButton browseTariffsButton = new JButton("Browse Tariffs & Estimates");
         browseTariffsButton.addActionListener(e -> TariffUI.launch());
