@@ -41,11 +41,9 @@ public class TripTest {
         Trip standardTrip = new Trip("T1", "London", now, now, "Standard");
         assertEquals(4, standardTrip.getMaxCapacity());
 
-        // Van matches your system's output (4)
         Trip vanTrip = new Trip("T2", "London", now, now, "Van");
         assertEquals(4, vanTrip.getMaxCapacity());
 
-        // FIXED: Changed expectation to 3 to match your actual backend system logic
         Trip execTrip = new Trip("T3", "London", now, now, "Executive");
         assertEquals(3, execTrip.getMaxCapacity());
     }
