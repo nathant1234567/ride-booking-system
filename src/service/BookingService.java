@@ -50,9 +50,18 @@ public class BookingService {
         if (!addedToTrip) {
             String newTripID = "TRP-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
             Trip newTrip = new Trip(newTripID, booking.getDestination(), booking.getDate(), booking.getTime(), booking.getVehicleType());
-            newTrip.addBooking(booking);
-            booking.setTrip(newTrip);
-            TripRepository.addTrip(newTrip);
+            
+            // Validate if the booking can actually fit in the new trip (vehicle)
+            if (booking.getNumberOfPassengers() <= newTrip.getMaxCapacity()) {
+                newTrip.addBooking(booking);
+                booking.setTrip(newTrip);
+                TripRepository.addTrip(newTrip);
+            } else {
+                // This case should ideally be caught by UI validation
+                System.err.println("CRITICAL: Booking for " + booking.getNumberOfPassengers() + 
+                                   " passengers exceeds maximum capacity (" + newTrip.getMaxCapacity() + 
+                                   ") for " + booking.getVehicleType());
+            }
         }
     }
 

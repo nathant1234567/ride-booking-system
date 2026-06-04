@@ -48,7 +48,7 @@ public class Trip {
      * @return
      */
     public int getMaxCapacity() {
-        if ("Van".equalsIgnoreCase(vehicleType)) return 8;
+        if ("Minibus".equalsIgnoreCase(vehicleType)) return 8;
         if ("Executive".equalsIgnoreCase(vehicleType)) return 3;
         return 4; // Default Standard capacity
     }

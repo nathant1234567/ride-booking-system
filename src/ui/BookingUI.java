@@ -43,12 +43,11 @@ public class BookingUI extends JPanel {
         JComboBox<String> destinationComboBox = new JComboBox<>(destinations);
         inputPanel.add(destinationComboBox);
 
-        // Added NEW VEHICLE TYPE DROPDOWN
+        // Vehicle Type
         inputPanel.add(new JLabel("Vehicle Type:"));
         String[] vehicles = {"Standard", "Executive", "Minibus"};
         JComboBox<String> vehicleComboBox = new JComboBox<>(vehicles);
         inputPanel.add(vehicleComboBox);
-        // ---------------------------------
 
         // Pickup
         inputPanel.add(new JLabel("Pickup Location:"));
@@ -62,9 +61,22 @@ public class BookingUI extends JPanel {
 
         // Passengers
         inputPanel.add(new JLabel("Number of Passengers:"));
-        SpinnerNumberModel passengerModel = new SpinnerNumberModel(1, 1, 8, 1);
+        SpinnerNumberModel passengerModel = new SpinnerNumberModel(1, 1, 4, 1);
         JSpinner passengerSpinner = new JSpinner(passengerModel);
         inputPanel.add(passengerSpinner);
+
+        vehicleComboBox.addActionListener(e -> {
+            String selected = (String) vehicleComboBox.getSelectedItem();
+            if ("Executive".equalsIgnoreCase(selected)) {
+                passengerModel.setMaximum(3);
+                if ((int) passengerSpinner.getValue() > 3) passengerSpinner.setValue(3);
+            } else if ("Minibus".equalsIgnoreCase(selected)) {
+                passengerModel.setMaximum(8);
+            } else {
+                passengerModel.setMaximum(4);
+                if ((int) passengerSpinner.getValue() > 4) passengerSpinner.setValue(4);
+            }
+        });
 
         // Luggage
         inputPanel.add(new JLabel("Number of Luggage Items:"));
@@ -188,6 +200,3 @@ public class BookingUI extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 }
-
-
-
