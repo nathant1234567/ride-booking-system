@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * The Payment class is responsible for handling the payment processing logic
+ * for transactions related to bookings. It verifies the validity of inputs
+ * such as payment amounts and methods, and delegates the payment processing
+ * to the appropriate method based on the selected payment option.
+ */
 public class Payment {
 
     /**

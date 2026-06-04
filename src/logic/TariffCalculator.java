@@ -1,6 +1,10 @@
 package logic;
 
 
+/**
+ * A class to calculate fare estimates based on multiple factors such as vehicle type,
+ * luggage count, travel distance, day of the week, and time of day.
+ */
 public class TariffCalculator {
 
     /**

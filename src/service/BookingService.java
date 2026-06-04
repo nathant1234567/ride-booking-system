@@ -11,12 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.*;
 
+/**
+ * The BookingService class provides functionalities for managing bookings, including
+ * saving, updating, canceling, assigning bookings to trips, calculating booking prices
+ * (with or without discounts), and providing trip-related notifications to users.
+ */
 public class BookingService {
-    /**
-     * Class to handle the logic to create bookings.
-     * It includes booking creation, cancellation and trip management functions. 
-     * @param booking
-     */
+
+
 
     private static NotificationService notificationService = new ConsoleNotificationService();
 
@@ -53,8 +55,6 @@ public class BookingService {
             TripRepository.addTrip(newTrip);
         }
     }
-
-
 
     /**
      * Cancels a booking and notifies the user and any affected trip-mates.

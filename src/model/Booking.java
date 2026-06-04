@@ -2,11 +2,11 @@ package model;
 
 import java.util.Date;
 
+/**
+ * Class representing a booking request made by the user which includes fields like destination, timing
+ * and luggage.
+ */
 public class Booking {
-    /**
-     * Class representing a booking request made by the user which includes fields like destination, timing
-     * and luggage.
-     */
     private User user;
     private String destination;
     private String pickupLocation;
@@ -18,6 +18,19 @@ public class Booking {
     private String vehicleType;
     private Trip trip;
 
+    /**
+     * Constructor to create a new Booking instance with detailed specifications.
+     *
+     * @param user              The user associated with the booking.
+     * @param destination       The destination of the trip.
+     * @param pickupLocation    The pickup location for the trip.
+     * @param lengthEstimate    The estimated length or duration of the trip in minutes.
+     * @param numberOfPassengers The number of passengers for the booking.
+     * @param numberOfLuggage   The number of luggage items for the booking.
+     * @param date              The date of the trip.
+     * @param time              The time of the trip.
+     * @param vehicleType       The type of vehicle requested for the trip.
+     */
     public Booking(User user, String destination, String pickupLocation, int lengthEstimate, int numberOfPassengers, int numberOfLuggage, Date date, Date time, String vehicleType) {
         this.user = user;
         this.destination = destination;
