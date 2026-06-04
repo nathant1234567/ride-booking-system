@@ -19,7 +19,7 @@ public class Trip {
 
     /**
      * Constructs a new Trip instance with the specified id, destination, date, time, and vehicle type.
-     * Initializes an empty list of bookings.
+     * Initialises an empty list of bookings.
      *
      * @param id the unique identifier for the trip
      * @param destination the destination of the trip
