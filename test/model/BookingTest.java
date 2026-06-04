@@ -1,8 +1,8 @@
 package model;
 
 // --- REMOVE JUPITER PACKAGES AND ADD JUNIT 4 IMPORTS ---
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 // ------------------------------------------------------
 
 import java.util.Date;
@@ -23,12 +23,12 @@ public class BookingTest { // Class must be public in JUnit 4
         Booking booking = new Booking(user, destination, pickup, lengthEstimate, passengers, amountOfLuggage, date, time);
 
         // Fixed for JUnit 4: The custom error message string goes FIRST
-        assertEquals("User should match", user, booking.getUser());
-        assertEquals("Destination should match", destination, booking.getDestination());
-        assertEquals("Pickup location should match", pickup, booking.getPickupLocation());
-        assertEquals("Number of passengers should match", passengers, booking.getNumberOfPassengers());
-        assertEquals("Date should match", date, booking.getDate());
-        assertEquals("Time should match", time, booking.getTime());
+        assertEquals(user, booking.getUser(), "User should match");
+        assertEquals(destination, booking.getDestination(), "Destination should match");
+        assertEquals(pickup, booking.getPickupLocation(), "Pickup location should match");
+        assertEquals(passengers, booking.getNumberOfPassengers(), "Number of passengers should match");
+        assertEquals(date, booking.getDate(), "Date should match");
+        assertEquals(time, booking.getTime(), "Time should match");
     }
 
     @Test
@@ -41,6 +41,7 @@ public class BookingTest { // Class must be public in JUnit 4
         booking.setDestination(newDest);
 
         // Fixed for JUnit 4: The custom error message string goes FIRST
-        assertEquals("Destination should be updated via setter", newDest, booking.getDestination());
+        assertEquals(newDest, booking.getDestination(),
+                "Destination should be updated via setter");
     }
 }

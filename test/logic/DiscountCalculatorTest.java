@@ -1,8 +1,9 @@
 package logic;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 public class DiscountCalculatorTest {
 
     // Fed the calculator a base price of 100 and a time of 12(noon) to verify the daytime discount logic

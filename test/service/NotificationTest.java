@@ -2,8 +2,8 @@ package service;
 
 import model.Booking;
 import model.User;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import repository.BookingRepository;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class NotificationTest {
         sentMessages.add(email + ": " + message);
     };
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sentMessages.clear();
         BookingService.setNotificationService(mockNotificationService);

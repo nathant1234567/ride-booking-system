@@ -3,14 +3,17 @@ package model;
 import repository.BookingRepository;
 
 // --- REMOVE JUPITER AND ADD WORKING JUNIT 4 IMPORTS ---
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 // ------------------------------------------------------
 
 import java.util.Date;
 
 public class BookingRepositoryTest {
 
+    /**
+     *
+     */
     @Test
     public void testAddBooking() { // Must be public in JUnit 4
 

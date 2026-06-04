@@ -2,9 +2,11 @@ package service;
 
 import model.Booking;
 import model.User;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
+
+
 
 public class BookingServiceTest {
 

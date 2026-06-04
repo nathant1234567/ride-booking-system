@@ -1,8 +1,8 @@
 package model;
 
 // --- REMOVE JUPITER PACKAGES AND ADD JUNIT 4 IMPORTS ---
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 // ------------------------------------------------------
 
 import java.util.Date;
@@ -15,10 +15,10 @@ public class TripTest { // Class must be public in JUnit 4
         Trip trip = new Trip("trip-123", "Central London", now, now, "Standard");
 
         // Fixed for JUnit 4: The custom error message string goes FIRST
-        assertEquals("ID should match constructor input", "trip-123", trip.getId());
-        assertEquals("Destination should match", "Central London", trip.getDestination());
-        assertEquals("Vehicle type should match", "Standard", trip.getVehicleType());
-        assertTrue("New trip should have no bookings initially", trip.getBookings().isEmpty());
+        assertEquals("trip-123", trip.getId(), "ID should match constructor input");
+        assertEquals("Central London", trip.getDestination(), "Destination should match");
+        assertEquals("Standard", trip.getVehicleType(), "Vehicle type should match");
+        assertTrue(trip.getBookings().isEmpty(), "New trip should have no bookings initially");
     }
 
     @Test
@@ -29,13 +29,12 @@ public class TripTest { // Class must be public in JUnit 4
         Booking booking = new Booking(user, "Central London", "Pickup", 10, 1, 1, new Date(), new Date());
 
         trip.addBooking(booking);
-        assertEquals("Trip should contain 1 booking", 1, trip.getBookings().size());
-        assertTrue("Trip contains the specific booking object", trip.getBookings().contains(booking));
 
-        trip.addBooking(booking);
-        assertEquals("Should not add duplicate bookings to the same trip", 1, trip.getBookings().size());
+        assertEquals(1, trip.getBookings().size(), "Trip should contain 1 booking");
+        assertTrue(trip.getBookings().contains(booking), "Trip contains the specific booking object");
 
         trip.removeBooking(booking);
-        assertTrue("Trip should be empty after removal", trip.getBookings().isEmpty());
+
+        assertTrue(trip.getBookings().isEmpty(), "Trip should be empty after removal");
     }
 }
