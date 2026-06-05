@@ -11,6 +11,7 @@
 ./src/ui/AmendBookingUI.java
 ./src/service/NotificationService.java
 ./src/service/ConsoleNotificationService.java
+./src/service/WindowNotificationService.java
 ./src/service/BookingService.java
 ./src/logic/DiscountCalculator.java
 ./src/logic/TariffCalculator.java
