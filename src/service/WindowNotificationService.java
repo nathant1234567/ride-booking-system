@@ -18,13 +18,18 @@ public class WindowNotificationService implements NotificationService {
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         
         frame.setLayout(new BorderLayout());
+        
+        JLabel headerLabel = new JLabel("All notifications", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        frame.add(headerLabel, BorderLayout.NORTH);
+        
         frame.add(new JScrollPane(textArea), BorderLayout.CENTER);
         
         frame.pack();
         frame.setLocationRelativeTo(null); // Center on screen (will be moved by user)
         // Set location to the right of the screen or something?
-        // Let's just center it for now, the user can move it.
-        
+
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setVisible(true);
     }
