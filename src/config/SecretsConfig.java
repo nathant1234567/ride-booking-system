@@ -35,7 +35,7 @@ public class SecretsConfig {
             GetSecretValueResponse response = client.getSecretValue(request);
             String secretString = response.secretString();
 
-            if (secretString == null && !secretString.isBlank()) {
+            if (secretString != null && !secretString.isBlank()) {
                 JSONObject json = new JSONObject(secretString);
                 for (String key : json.keySet()) {
                     cache.put(key, json.getString(key));
